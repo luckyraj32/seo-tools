@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Writer - Free Online Tool | Multi-Tools Website</title>
+    <meta name="description" content="Free AI writer tool. Generate high-quality content for any purpose with our AI-powered writing assistant.">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/css/styles.css" rel="stylesheet">
+    <style>
+        .writer-container {
+            min-height: 400px;
+            position: relative;
+        }
+        .writer-editor {
+            width: 100%;
+            min-height: 400px;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            resize: vertical;
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+        }
+        .writer-toolbar {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .writer-stats {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .generation-options {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .ai-suggestions {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        .suggestion-item {
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .suggestion-item:hover {
+            background-color: #f8f9fa;
+        }
+        .loading-indicator {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .loading-spinner {
+            width: 3rem;
+            height: 3rem;
+        }
+        .content-type-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .content-type-btn {
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .content-type-btn:hover {
+            background-color: #f8f9fa;
+        }
+        .content-type-btn.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Container -->
+    <div id="header-container"></div>
+
+    <!-- Tool Container -->
+    <div class="tool-container">
+        <!-- Tool Header -->
+        <div class="tool-header">
+            <h1>AI Writer</h1>
+            <p class="lead">Generate high-quality content for any purpose with our AI-powered writing assistant</p>
+        </div>
+
+        <!-- Ad Space -->
+        <div class="ad-space">
+            <!-- Ad content will be loaded dynamically -->
+        </div>
+
+        <!-- Tool Content -->
+        <div class="row">
+            <!-- Main Tool Area -->
+            <div class="col-md-8">
+                <!-- Content Type Selection -->
+                <div class="content-type-buttons">
+                    <div class="content-type-btn active" data-type="blog">Blog Post</div>
+                    <div class="content-type-btn" data-type="article">Article</div>
+                    <div class="content-type-btn" data-type="social">Social Media</div>
+                    <div class="content-type-btn" data-type="product">Product Description</div>
+                    <div class="content-type-btn" data-type="email">Email</div>
+                </div>
+
+                <!-- Generation Options -->
+                <div class="generation-options">
+                    <h5>Content Generation Options</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Topic/Subject</label>
+                                <input type="text" class="form-control" id="contentTopic" placeholder="Enter your topic or subject">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Tone</label>
+                                <select class="form-select" id="contentTone">
+                                    <option value="professional">Professional</option>
+                                    <option value="casual">Casual</option>
+                                    <option value="friendly">Friendly</option>
+                                    <option value="formal">Formal</option>
+                                    <option value="humorous">Humorous</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Length</label>
+                                <select class="form-select" id="contentLength">
+                                    <option value="short">Short (100-200 words)</option>
+                                    <option value="medium">Medium (300-500 words)</option>
+                                    <option value="long">Long (500+ words)</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Keywords (optional)</label>
+                                <input type="text" class="form-control" id="contentKeywords" placeholder="Enter keywords separated by commas">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="generateContent()">
+                        <i class="fas fa-magic"></i> Generate Content
+                    </button>
+                </div>
+
+                <!-- Loading Indicator -->
+                <div class="loading-indicator" id="loadingIndicator">
+                    <div class="spinner-border loading-spinner text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Generating your content...</p>
+                </div>
+
+                <!-- Content Editor -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="writer-container">
+                            <textarea id="contentEditor" class="writer-editor" placeholder="Your generated content will appear here..."></textarea>
+                            
+                            <!-- Toolbar -->
+                            <div class="writer-toolbar">
+                                <button class="btn btn-sm btn-outline-primary" onclick="saveContent()">
+                                    <i class="fas fa-save"></i> Save
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="clearContent()">
+                                    <i class="fas fa-trash"></i> Clear
+                                </button>
+                                <button class="btn btn-sm btn-outline-success" onclick="downloadContent()">
+                                    <i class="fas fa-download"></i> Download
+                                </button>
+                            </div>
+
+                            <!-- Stats -->
+                            <div class="writer-stats">
+                                <span id="wordCount">0 words</span> | 
+                                <span id="charCount">0 characters</span> | 
+                                <span id="paragraphCount">0 paragraphs</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Suggestions -->
+                <div class="ai-suggestions" id="aiSuggestions">
+                    <!-- AI suggestions will appear here -->
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-md-4">
+                <!-- Tool Information -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">About This Tool</h5>
+                        <p>Our AI Writer helps you create engaging content for various purposes.</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success"></i> Multiple content types</li>
+                            <li><i class="fas fa-check text-success"></i> Customizable tone</li>
+                            <li><i class="fas fa-check text-success"></i> SEO-friendly</li>
+                            <li><i class="fas fa-check text-success"></i> AI-powered suggestions</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Ad Space -->
+                <div class="ad-space">
+                    <!-- Ad content will be loaded dynamically -->
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Related Tools</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="/tools/ai-writing-generator-tools/ai-essay-writer.html">AI Essay Writer</a></li>
+                            <li><a href="/tools/ai-writing-generator-tools/ai-text-generator.html">AI Text Generator</a></li>
+                            <li><a href="/tools/ai-writing-generator-tools/title-generator.html">Title Generator</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEO Content -->
+        <div class="mt-5">
+            <h2>Why Use an AI Writer?</h2>
+            <p>An AI writer helps you create engaging, high-quality content for various purposes quickly and efficiently.</p>
+            
+            <h3>Key Features of Our AI Writer</h3>
+            <ul>
+                <li>Multiple content types support</li>
+                <li>Customizable tone and style</li>
+                <li>SEO optimization</li>
+                <li>AI-powered suggestions</li>
+                <li>Easy export options</li>
+            </ul>
+
+            <h3>Common Use Cases</h3>
+            <ul>
+                <li>Blog posts</li>
+                <li>Social media content</li>
+                <li>Product descriptions</li>
+                <li>Email marketing</li>
+                <li>Website content</li>
+            </ul>
+
+            <h3>Tips for Better Content</h3>
+            <ul>
+                <li>Choose appropriate content type</li>
+                <li>Use relevant keywords</li>
+                <li>Maintain consistent tone</li>
+                <li>Include engaging visuals</li>
+                <li>Optimize for your audience</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Footer Container -->
+    <div id="footer-container"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/js/main.js"></script>
+    <!-- Tool-specific JS -->
+    <script>
+        let currentContentType = 'blog';
+
+        // Update content type selection
+        document.querySelectorAll('.content-type-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.content-type-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentContentType = btn.dataset.type;
+            });
+        });
+
+        // Update text statistics
+        function updateStats() {
+            const text = document.getElementById('contentEditor').value;
+            const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+            const chars = text.length;
+            const paragraphs = text.split('\n\n').filter(p => p.trim().length > 0).length;
+
+            document.getElementById('wordCount').textContent = `${words} words`;
+            document.getElementById('charCount').textContent = `${chars} characters`;
+            document.getElementById('paragraphCount').textContent = `${paragraphs} paragraphs`;
+        }
+
+        // Generate content
+        function generateContent() {
+            const topic = document.getElementById('contentTopic').value;
+            const tone = document.getElementById('contentTone').value;
+            const length = document.getElementById('contentLength').value;
+            const keywords = document.getElementById('contentKeywords').value;
+
+            if (!topic.trim()) {
+                alert('Please enter a topic or subject.');
+                return;
+            }
+
+            // Show loading indicator
+            document.getElementById('loadingIndicator').style.display = 'block';
+
+            // Simulate AI generation (replace with actual AI API call)
+            setTimeout(() => {
+                const content = generateSampleContent(topic, tone, length, keywords);
+                document.getElementById('contentEditor').value = content;
+                updateStats();
+                document.getElementById('loadingIndicator').style.display = 'none';
+            }, 2000);
+        }
+
+        // Generate sample content (replace with actual AI generation)
+        function generateSampleContent(topic, tone, length, keywords) {
+            const introductions = {
+                blog: `Welcome to our latest post about ${topic}! Today, we're diving deep into...`,
+                article: `In this comprehensive article, we'll explore the fascinating world of ${topic}...`,
+                social: `🔥 Exciting news about ${topic}! Here's what you need to know...`,
+                product: `Introducing our amazing ${topic} - the perfect solution for...`,
+                email: `Dear valued customer,\n\nI hope this email finds you well. I wanted to share some exciting news about ${topic}...`
+            };
+
+            const bodyParagraphs = {
+                blog: [
+                    `First, let's look at the key aspects of ${topic}...`,
+                    `What makes ${topic} so special is...`,
+                    `Here are some practical tips for ${topic}...`,
+                    `Let's explore some real-world examples of ${topic}...`
+                ],
+                article: [
+                    `The significance of ${topic} cannot be overstated...`,
+                    `Recent developments in ${topic} have shown...`,
+                    `Experts in the field of ${topic} suggest...`,
+                    `Looking ahead, the future of ${topic} appears...`
+                ],
+                social: [
+                    `✨ Key benefits of ${topic}:\n\n1. First benefit\n2. Second benefit\n3. Third benefit`,
+                    `💡 Pro tip: When dealing with ${topic}, always remember to...`,
+                    `🎯 Want to learn more about ${topic}? Check out our full guide!`
+                ],
+                product: [
+                    `Our ${topic} features cutting-edge technology...`,
+                    `The benefits of choosing our ${topic} include...`,
+                    `Perfect for anyone looking to enhance their experience with ${topic}...`,
+                    `Don't miss out on the opportunity to transform your ${topic} experience!`
+                ],
+                email: [
+                    `We're excited to announce that ${topic} is now available...`,
+                    `As a valued customer, you'll receive special benefits for ${topic}...`,
+                    `To learn more about ${topic}, simply click the link below...`
+                ]
+            };
+
+            const conclusions = {
+                blog: `We hope you found this post about ${topic} helpful! Let us know your thoughts in the comments below.`,
+                article: `In conclusion, ${topic} represents a significant development in...`,
+                social: `Share your thoughts about ${topic} in the comments! 👇`,
+                product: `Ready to experience the difference with our ${topic}? Order now!`,
+                email: `Thank you for your continued support. We look forward to serving you with ${topic}!\n\nBest regards,\nYour Team"
+            };
+
+            const content = `${introductions[currentContentType]}\n\n${bodyParagraphs[currentContentType].join('\n\n')}\n\n${conclusions[currentContentType]}`;
+            return content;
+        }
+
+        // Save content
+        function saveContent() {
+            const content = document.getElementById('contentEditor').value;
+            if (!content.trim()) {
+                alert('Please generate or enter content to save.');
+                return;
+            }
+
+            const title = document.getElementById('contentTopic').value || 'Untitled Content';
+            const savedContent = JSON.parse(localStorage.getItem('savedContent')) || [];
+            savedContent.push({
+                id: Date.now(),
+                title: title,
+                type: currentContentType,
+                content: content,
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('savedContent', JSON.stringify(savedContent));
+            alert('Content saved successfully!');
+        }
+
+        // Clear content
+        function clearContent() {
+            if (confirm('Are you sure you want to clear the content?')) {
+                document.getElementById('contentEditor').value = '';
+                document.getElementById('contentTopic').value = '';
+                document.getElementById('contentKeywords').value = '';
+                updateStats();
+            }
+        }
+
+        // Download content
+        function downloadContent() {
+            const content = document.getElementById('contentEditor').value;
+            const title = document.getElementById('contentTopic').value || 'content';
+            
+            if (!content.trim()) {
+                alert('Please generate or enter content to download.');
+                return;
+            }
+
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${title.toLowerCase().replace(/\s+/g, '-')}.txt`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Initialize
+        document.getElementById('contentEditor').addEventListener('input', updateStats);
+    </script>
+</body>
+</html> 

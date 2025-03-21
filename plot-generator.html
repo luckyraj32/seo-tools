@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plot Generator - Free Online Tool | Multi-Tools Website</title>
+    <meta name="description" content="Free plot generator tool. Create engaging story plots with our AI-powered plot generation technology.">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/css/styles.css" rel="stylesheet">
+    <style>
+        .plot-container {
+            min-height: 400px;
+            position: relative;
+        }
+        .plot-editor {
+            width: 100%;
+            min-height: 400px;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            resize: vertical;
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+        }
+        .plot-toolbar {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .plot-stats {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .generation-options {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .plot-suggestions {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        .suggestion-item {
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .suggestion-item:hover {
+            background-color: #f8f9fa;
+            transform: translateX(5px);
+        }
+        .loading-indicator {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .loading-spinner {
+            width: 3rem;
+            height: 3rem;
+        }
+        .genre-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .genre-btn {
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .genre-btn:hover {
+            background-color: #f8f9fa;
+        }
+        .genre-btn.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        .plot-preview {
+            font-size: 1.1em;
+            text-align: left;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px dashed #dee2e6;
+            border-radius: 4px;
+            min-height: 100px;
+            background-color: #f8f9fa;
+        }
+        .plot-elements {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .plot-element {
+            margin-bottom: 15px;
+        }
+        .plot-element h6 {
+            margin-bottom: 5px;
+            color: #495057;
+        }
+        .plot-element p {
+            margin-bottom: 0;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Container -->
+    <div id="header-container"></div>
+
+    <!-- Tool Container -->
+    <div class="tool-container">
+        <!-- Tool Header -->
+        <div class="tool-header">
+            <h1>Plot Generator</h1>
+            <p class="lead">Create engaging story plots with our AI-powered plot generation technology</p>
+        </div>
+
+        <!-- Ad Space -->
+        <div class="ad-space">
+            <!-- Ad content will be loaded dynamically -->
+        </div>
+
+        <!-- Tool Content -->
+        <div class="row">
+            <!-- Main Tool Area -->
+            <div class="col-md-8">
+                <!-- Genre Selection -->
+                <div class="genre-buttons">
+                    <div class="genre-btn active" data-type="fantasy">Fantasy</div>
+                    <div class="genre-btn" data-type="mystery">Mystery</div>
+                    <div class="genre-btn" data-type="romance">Romance</div>
+                    <div class="genre-btn" data-type="scifi">Sci-Fi</div>
+                    <div class="genre-btn" data-type="thriller">Thriller</div>
+                </div>
+
+                <!-- Generation Options -->
+                <div class="generation-options">
+                    <h5>Plot Generation Options</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Main Theme</label>
+                                <input type="text" class="form-control" id="plotTheme" placeholder="Enter your main theme or concept">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Setting</label>
+                                <select class="form-select" id="plotSetting">
+                                    <option value="modern">Modern Day</option>
+                                    <option value="historical">Historical</option>
+                                    <option value="futuristic">Futuristic</option>
+                                    <option value="fantasy">Fantasy World</option>
+                                    <option value="post-apocalyptic">Post-Apocalyptic</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Keywords (optional)</label>
+                                <input type="text" class="form-control" id="plotKeywords" placeholder="Enter keywords separated by commas">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Plot Complexity</label>
+                                <select class="form-select" id="plotComplexity">
+                                    <option value="simple">Simple</option>
+                                    <option value="moderate">Moderate</option>
+                                    <option value="complex">Complex</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="generatePlot()">
+                        <i class="fas fa-magic"></i> Generate Plot
+                    </button>
+                </div>
+
+                <!-- Loading Indicator -->
+                <div class="loading-indicator" id="loadingIndicator">
+                    <div class="spinner-border loading-spinner text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Generating your plot...</p>
+                </div>
+
+                <!-- Plot Preview -->
+                <div class="plot-preview" id="plotPreview">
+                    Your generated plot will appear here...
+                </div>
+
+                <!-- Plot Elements -->
+                <div class="plot-elements" id="plotElements">
+                    <!-- Plot elements will appear here -->
+                </div>
+
+                <!-- Plot Editor -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="plot-container">
+                            <textarea id="plotEditor" class="plot-editor" placeholder="Your generated plot will appear here..."></textarea>
+                            
+                            <!-- Toolbar -->
+                            <div class="plot-toolbar">
+                                <button class="btn btn-sm btn-outline-primary" onclick="savePlot()">
+                                    <i class="fas fa-save"></i> Save
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="clearPlot()">
+                                    <i class="fas fa-trash"></i> Clear
+                                </button>
+                                <button class="btn btn-sm btn-outline-success" onclick="downloadPlot()">
+                                    <i class="fas fa-download"></i> Download
+                                </button>
+                            </div>
+
+                            <!-- Stats -->
+                            <div class="plot-stats">
+                                <span id="wordCount">0 words</span> | 
+                                <span id="charCount">0 characters</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Plot Suggestions -->
+                <div class="plot-suggestions" id="plotSuggestions">
+                    <!-- Plot suggestions will appear here -->
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-md-4">
+                <!-- Tool Information -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">About This Tool</h5>
+                        <p>Our Plot Generator helps you create engaging and well-structured story plots.</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success"></i> Multiple genres</li>
+                            <li><i class="fas fa-check text-success"></i> Customizable settings</li>
+                            <li><i class="fas fa-check text-success"></i> Plot elements</li>
+                            <li><i class="fas fa-check text-success"></i> AI-powered suggestions</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Ad Space -->
+                <div class="ad-space">
+                    <!-- Ad content will be loaded dynamically -->
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Related Tools</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="/tools/ai-writing-generator-tools/ai-essay-writer.html">AI Essay Writer</a></li>
+                            <li><a href="/tools/ai-writing-generator-tools/ai-writer.html">AI Writer</a></li>
+                            <li><a href="/tools/ai-writing-generator-tools/ai-text-generator.html">AI Text Generator</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEO Content -->
+        <div class="mt-5">
+            <h2>Why Use a Plot Generator?</h2>
+            <p>A plot generator helps you create engaging and well-structured story plots that captivate your readers.</p>
+            
+            <h3>Key Features of Our Plot Generator</h3>
+            <ul>
+                <li>Multiple genre support</li>
+                <li>Customizable settings</li>
+                <li>Plot elements</li>
+                <li>AI-powered suggestions</li>
+                <li>Easy export options</li>
+            </ul>
+
+            <h3>Common Use Cases</h3>
+            <ul>
+                <li>Novel writing</li>
+                <li>Short stories</li>
+                <li>Screenplays</li>
+                <li>Creative writing</li>
+                <li>Story development</li>
+            </ul>
+
+            <h3>Tips for Better Plot Generation</h3>
+            <ul>
+                <li>Choose appropriate genre</li>
+                <li>Use relevant keywords</li>
+                <li>Select suitable setting</li>
+                <li>Consider plot complexity</li>
+                <li>Review and edit generated plots</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Footer Container -->
+    <div id="footer-container"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/js/main.js"></script>
+    <!-- Tool-specific JS -->
+    <script>
+        let currentGenre = 'fantasy';
+
+        // Update genre selection
+        document.querySelectorAll('.genre-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentGenre = btn.dataset.type;
+            });
+        });
+
+        // Update plot statistics
+        function updateStats() {
+            const text = document.getElementById('plotEditor').value;
+            const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+            const chars = text.length;
+
+            document.getElementById('wordCount').textContent = `${words} words`;
+            document.getElementById('charCount').textContent = `${chars} characters`;
+        }
+
+        // Generate plot
+        function generatePlot() {
+            const theme = document.getElementById('plotTheme').value;
+            const setting = document.getElementById('plotSetting').value;
+            const keywords = document.getElementById('plotKeywords').value;
+            const complexity = document.getElementById('plotComplexity').value;
+
+            if (!theme.trim()) {
+                alert('Please enter a main theme or concept.');
+                return;
+            }
+
+            // Show loading indicator
+            document.getElementById('loadingIndicator').style.display = 'block';
+
+            // Simulate AI generation (replace with actual AI API call)
+            setTimeout(() => {
+                const plot = generateSamplePlot(theme, setting, keywords, complexity);
+                document.getElementById('plotEditor').value = plot.summary;
+                document.getElementById('plotPreview').innerHTML = plot.summary;
+                displayPlotElements(plot.elements);
+                updateStats();
+                document.getElementById('loadingIndicator').style.display = 'none';
+            }, 2000);
+        }
+
+        // Generate sample plot (replace with actual AI generation)
+        function generateSamplePlot(theme, setting, keywords, complexity) {
+            const plotTemplates = {
+                fantasy: {
+                    summary: `In a world where ${theme} holds the key to ultimate power, a young protagonist discovers their hidden abilities. As they navigate through ${setting} landscapes, they must confront ancient forces and make difficult choices that will shape the fate of their world.`,
+                    elements: {
+                        protagonist: "A young individual with hidden magical abilities",
+                        conflict: "Internal struggle with power and responsibility",
+                        setting: `${setting} world with magical elements`,
+                        resolution: "Triumph over adversity through self-discovery"
+                    }
+                },
+                mystery: {
+                    summary: `When ${theme} becomes the center of a mysterious investigation, a determined detective must unravel a complex web of clues. Set in ${setting}, the story follows the detective's journey as they piece together the truth while facing unexpected obstacles.`,
+                    elements: {
+                        protagonist: "A skilled detective with a unique perspective",
+                        conflict: "Solving a complex mystery while facing personal challenges",
+                        setting: `${setting} environment with hidden secrets`,
+                        resolution: "Uncovering the truth through careful investigation"
+                    }
+                },
+                romance: {
+                    summary: `In a ${setting} world where ${theme} brings two unlikely souls together, a passionate romance unfolds. As they navigate through life's challenges, their connection grows stronger, leading to unexpected revelations and personal growth.`,
+                    elements: {
+                        protagonist: "A relatable character seeking love and purpose",
+                        conflict: "Overcoming obstacles to find true love",
+                        setting: `${setting} backdrop for romance`,
+                        resolution: "Finding love and personal fulfillment"
+                    }
+                },
+                scifi: {
+                    summary: `In a ${setting} future where ${theme} revolutionizes society, a brilliant scientist makes a groundbreaking discovery. As they explore the implications of their findings, they must confront ethical dilemmas and the potential consequences of their work.`,
+                    elements: {
+                        protagonist: "A brilliant scientist with a vision",
+                        conflict: "Balancing scientific progress with ethical concerns",
+                        setting: `${setting} future with advanced technology`,
+                        resolution: "Finding a balance between progress and responsibility"
+                    }
+                },
+                thriller: {
+                    summary: `When ${theme} becomes the focus of a dangerous conspiracy, an ordinary person is thrust into a world of intrigue. Set in ${setting}, they must navigate through a maze of deception and danger to uncover the truth and save themselves.`,
+                    elements: {
+                        protagonist: "An ordinary person caught in extraordinary circumstances",
+                        conflict: "Surviving while uncovering a dangerous conspiracy",
+                        setting: `${setting} environment filled with tension`,
+                        resolution: "Exposing the truth and finding justice"
+                    }
+                }
+            };
+
+            const basePlot = plotTemplates[currentGenre];
+            const keywordArray = keywords ? keywords.split(',').map(k => k.trim()) : [];
+
+            // Modify plot based on keywords
+            let modifiedPlot = { ...basePlot };
+            if (keywordArray.length > 0) {
+                modifiedPlot.summary = modifiedPlot.summary.replace(/\${theme}/g, `${theme}: ${keywordArray[0]}`);
+                modifiedPlot.elements = {
+                    ...modifiedPlot.elements,
+                    additional: keywordArray.slice(1).join(', ')
+                };
+            } else {
+                modifiedPlot.summary = modifiedPlot.summary.replace(/\${theme}/g, theme);
+            }
+
+            return modifiedPlot;
+        }
+
+        // Display plot elements
+        function displayPlotElements(elements) {
+            const container = document.getElementById('plotElements');
+            container.innerHTML = '';
+
+            for (const [key, value] of Object.entries(elements)) {
+                if (key !== 'additional') {
+                    const element = document.createElement('div');
+                    element.className = 'plot-element';
+                    element.innerHTML = `
+                        <h6>${key.charAt(0).toUpperCase() + key.slice(1)}</h6>
+                        <p>${value}</p>
+                    `;
+                    container.appendChild(element);
+                }
+            }
+
+            if (elements.additional) {
+                const element = document.createElement('div');
+                element.className = 'plot-element';
+                element.innerHTML = `
+                    <h6>Additional Elements</h6>
+                    <p>${elements.additional}</p>
+                `;
+                container.appendChild(element);
+            }
+        }
+
+        // Save plot
+        function savePlot() {
+            const plot = document.getElementById('plotEditor').value;
+            if (!plot.trim()) {
+                alert('Please generate or enter a plot to save.');
+                return;
+            }
+
+            const theme = document.getElementById('plotTheme').value || 'Untitled';
+            const savedPlots = JSON.parse(localStorage.getItem('savedPlots')) || [];
+            savedPlots.push({
+                id: Date.now(),
+                theme: theme,
+                genre: currentGenre,
+                plot: plot,
+                elements: document.getElementById('plotElements').innerHTML,
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('savedPlots', JSON.stringify(savedPlots));
+            alert('Plot saved successfully!');
+        }
+
+        // Clear plot
+        function clearPlot() {
+            if (confirm('Are you sure you want to clear the plot?')) {
+                document.getElementById('plotEditor').value = '';
+                document.getElementById('plotTheme').value = '';
+                document.getElementById('plotKeywords').value = '';
+                document.getElementById('plotPreview').textContent = 'Your generated plot will appear here...';
+                document.getElementById('plotElements').innerHTML = '';
+                updateStats();
+            }
+        }
+
+        // Download plot
+        function downloadPlot() {
+            const plot = document.getElementById('plotEditor').value;
+            const theme = document.getElementById('plotTheme').value || 'plot';
+            const elements = document.getElementById('plotElements').innerHTML;
+            
+            if (!plot.trim()) {
+                alert('Please generate or enter a plot to download.');
+                return;
+            }
+
+            const content = `Plot: ${theme}\n\n${plot}\n\nPlot Elements:\n${elements}`;
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${theme.toLowerCase().replace(/\s+/g, '-')}-plot.txt`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Initialize
+        document.getElementById('plotEditor').addEventListener('input', updateStats);
+    </script>
+</body>
+</html> 

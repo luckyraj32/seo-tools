@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Humanizer - Free Online Tool | Multi-Tools Website</title>
+    <meta name="description" content="Free AI humanizer tool. Make your text more natural and human-like with our AI-powered technology.">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/css/styles.css" rel="stylesheet">
+    <style>
+        .humanizer-container {
+            min-height: 400px;
+            position: relative;
+        }
+        .humanizer-editor {
+            width: 100%;
+            min-height: 400px;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            resize: vertical;
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+        }
+        .humanizer-toolbar {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .humanizer-stats {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .generation-options {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .humanizer-suggestions {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        .suggestion-item {
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .suggestion-item:hover {
+            background-color: #f8f9fa;
+            transform: translateX(5px);
+        }
+        .loading-indicator {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .loading-spinner {
+            width: 3rem;
+            height: 3rem;
+        }
+        .style-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .style-btn {
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .style-btn:hover {
+            background-color: #f8f9fa;
+        }
+        .style-btn.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        .text-preview {
+            font-size: 1.1em;
+            text-align: left;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px dashed #dee2e6;
+            border-radius: 4px;
+            min-height: 100px;
+            background-color: #f8f9fa;
+        }
+        .text-elements {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .text-element {
+            margin-bottom: 15px;
+        }
+        .text-element h6 {
+            margin-bottom: 5px;
+            color: #495057;
+        }
+        .text-element p {
+            margin-bottom: 0;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Container -->
+    <div id="header-container"></div>
+
+    <!-- Tool Container -->
+    <div class="tool-container">
+        <!-- Tool Header -->
+        <div class="tool-header">
+            <h1>AI Humanizer</h1>
+            <p class="lead">Make your text more natural and human-like with our AI-powered technology</p>
+        </div>
+
+        <!-- Ad Space -->
+        <div class="ad-space">
+            <!-- Ad content will be loaded dynamically -->
+        </div>
+
+        <!-- Tool Content -->
+        <div class="row">
+            <!-- Main Tool Area -->
+            <div class="col-md-8">
+                <!-- Style Selection -->
+                <div class="style-buttons">
+                    <div class="style-btn active" data-style="casual">Casual</div>
+                    <div class="style-btn" data-style="professional">Professional</div>
+                    <div class="style-btn" data-style="friendly">Friendly</div>
+                    <div class="style-btn" data-style="formal">Formal</div>
+                    <div class="style-btn" data-style="creative">Creative</div>
+                </div>
+
+                <!-- Generation Options -->
+                <div class="generation-options">
+                    <h5>Text Humanization Options</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Input Text</label>
+                                <textarea class="form-control" id="inputText" rows="4" placeholder="Enter the text you want to humanize"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Tone Level</label>
+                                <select class="form-select" id="toneLevel">
+                                    <option value="light">Light</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="heavy">Heavy</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Keywords (optional)</label>
+                                <input type="text" class="form-control" id="humanizerKeywords" placeholder="Enter keywords separated by commas">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Target Audience</label>
+                                <select class="form-select" id="targetAudience">
+                                    <option value="general">General</option>
+                                    <option value="academic">Academic</option>
+                                    <option value="business">Business</option>
+                                    <option value="technical">Technical</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="humanizeText()">
+                        <i class="fas fa-magic"></i> Humanize Text
+                    </button>
+                </div>
+
+                <!-- Loading Indicator -->
+                <div class="loading-indicator" id="loadingIndicator">
+                    <div class="spinner-border loading-spinner text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Humanizing your text...</p>
+                </div>
+
+                <!-- Text Preview -->
+                <div class="text-preview" id="textPreview">
+                    Your humanized text will appear here...
+                </div>
+
+                <!-- Text Elements -->
+                <div class="text-elements" id="textElements">
+                    <!-- Text elements will appear here -->
+                </div>
+
+                <!-- Text Editor -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="humanizer-container">
+                            <textarea id="humanizerEditor" class="humanizer-editor" placeholder="Your humanized text will appear here..."></textarea>
+                            
+                            <!-- Toolbar -->
+                            <div class="humanizer-toolbar">
+                                <button class="btn btn-sm btn-outline-primary" onclick="saveText()">
+                                    <i class="fas fa-save"></i> Save
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="clearText()">
+                                    <i class="fas fa-trash"></i> Clear
+                                </button>
+                                <button class="btn btn-sm btn-outline-success" onclick="downloadText()">
+                                    <i class="fas fa-download"></i> Download
+                                </button>
+                            </div>
+
+                            <!-- Stats -->
+                            <div class="humanizer-stats">
+                                <span id="wordCount">0 words</span> | 
+                                <span id="charCount">0 characters</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Text Suggestions -->
+                <div class="humanizer-suggestions" id="humanizerSuggestions">
+                    <!-- Text suggestions will appear here -->
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-md-4">
+                <!-- Tool Information -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">About This Tool</h5>
+                        <p>Our AI Humanizer helps you make your text more natural and human-like.</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success"></i> Multiple styles</li>
+                            <li><i class="fas fa-check text-success"></i> Customizable tone</li>
+                            <li><i class="fas fa-check text-success"></i> Audience targeting</li>
+                            <li><i class="fas fa-check text-success"></i> AI-powered suggestions</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Ad Space -->
+                <div class="ad-space">
+                    <!-- Ad content will be loaded dynamically -->
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Related Tools</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="/tools/ai-writing-generator-tools/ai-essay-writer.html">AI Essay Writer</a></li>
+                            <li><a href="/tools/ai-writing-generator-tools/ai-writer.html">AI Writer</a></li>
+                            <li><a href="/tools/ai-writing-generator-tools/ai-text-generator.html">AI Text Generator</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEO Content -->
+        <div class="mt-5">
+            <h2>Why Use an AI Humanizer?</h2>
+            <p>An AI humanizer helps you make your text more natural and engaging by adding human-like elements and improving readability.</p>
+            
+            <h3>Key Features of Our AI Humanizer</h3>
+            <ul>
+                <li>Multiple style options</li>
+                <li>Customizable tone levels</li>
+                <li>Audience targeting</li>
+                <li>AI-powered suggestions</li>
+                <li>Easy export options</li>
+            </ul>
+
+            <h3>Common Use Cases</h3>
+            <ul>
+                <li>Content creation</li>
+                <li>Business communication</li>
+                <li>Academic writing</li>
+                <li>Social media posts</li>
+                <li>Marketing copy</li>
+            </ul>
+
+            <h3>Tips for Better Humanization</h3>
+            <ul>
+                <li>Choose appropriate style</li>
+                <li>Consider your audience</li>
+                <li>Use relevant keywords</li>
+                <li>Adjust tone level</li>
+                <li>Review and edit results</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Footer Container -->
+    <div id="footer-container"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/js/main.js"></script>
+    <!-- Tool-specific JS -->
+    <script>
+        let currentStyle = 'casual';
+
+        // Update style selection
+        document.querySelectorAll('.style-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.style-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentStyle = btn.dataset.style;
+            });
+        });
+
+        // Update text statistics
+        function updateStats() {
+            const text = document.getElementById('humanizerEditor').value;
+            const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+            const chars = text.length;
+
+            document.getElementById('wordCount').textContent = `${words} words`;
+            document.getElementById('charCount').textContent = `${chars} characters`;
+        }
+
+        // Humanize text
+        function humanizeText() {
+            const input = document.getElementById('inputText').value;
+            const tone = document.getElementById('toneLevel').value;
+            const keywords = document.getElementById('humanizerKeywords').value;
+            const audience = document.getElementById('targetAudience').value;
+
+            if (!input.trim()) {
+                alert('Please enter text to humanize.');
+                return;
+            }
+
+            // Show loading indicator
+            document.getElementById('loadingIndicator').style.display = 'block';
+
+            // Simulate AI generation (replace with actual AI API call)
+            setTimeout(() => {
+                const result = generateHumanizedText(input, tone, keywords, audience);
+                document.getElementById('humanizerEditor').value = result.content;
+                document.getElementById('textPreview').innerHTML = result.content;
+                displayTextElements(result.elements);
+                updateStats();
+                document.getElementById('loadingIndicator').style.display = 'none';
+            }, 2000);
+        }
+
+        // Generate humanized text (replace with actual AI generation)
+        function generateHumanizedText(input, tone, keywords, audience) {
+            const humanizationTemplates = {
+                casual: {
+                    content: `Hey there! ${input} ${keywords ? keywords.split(',')[0] : 'is pretty cool'}, right? ${keywords ? keywords.split(',')[1] || 'I think'} we can make it even better!`,
+                    elements: {
+                        greeting: 'Hey there!',
+                        mainText: input,
+                        emphasis: `${keywords ? keywords.split(',')[0] : 'is pretty cool'}`,
+                        conclusion: `${keywords ? keywords.split(',')[1] || 'I think'} we can make it even better!`
+                    }
+                },
+                professional: {
+                    content: `I am writing to discuss ${input}. ${keywords ? keywords.split(',')[0] : 'Based on our analysis'}, ${keywords ? keywords.split(',')[1] || 'we have identified'} several key points to consider.`,
+                    elements: {
+                        introduction: 'I am writing to discuss',
+                        mainText: input,
+                        analysis: `${keywords ? keywords.split(',')[0] : 'Based on our analysis'}`,
+                        points: `${keywords ? keywords.split(',')[1] || 'we have identified'} several key points to consider`
+                    }
+                },
+                friendly: {
+                    content: `Hi! I wanted to share something exciting about ${input}. ${keywords ? keywords.split(',')[0] : 'You know what'}? ${keywords ? keywords.split(',')[1] || 'It\'s really interesting'} to explore this further!`,
+                    elements: {
+                        greeting: 'Hi!',
+                        mainText: input,
+                        engagement: `${keywords ? keywords.split(',')[0] : 'You know what'}`,
+                        enthusiasm: `${keywords ? keywords.split(',')[1] || 'It\'s really interesting'} to explore this further!`
+                    }
+                },
+                formal: {
+                    content: `This document addresses ${input}. ${keywords ? keywords.split(',')[0] : 'In accordance with established protocols'}, ${keywords ? keywords.split(',')[1] || 'we shall proceed'} with the following considerations.`,
+                    elements: {
+                        introduction: 'This document addresses',
+                        mainText: input,
+                        protocol: `${keywords ? keywords.split(',')[0] : 'In accordance with established protocols'}`,
+                        action: `${keywords ? keywords.split(',')[1] || 'we shall proceed'} with the following considerations`
+                    }
+                },
+                creative: {
+                    content: `Imagine a world where ${input} ${keywords ? keywords.split(',')[0] : 'comes alive'}. ${keywords ? keywords.split(',')[1] || 'The possibilities are endless'} as we explore this fascinating concept!`,
+                    elements: {
+                        imagination: 'Imagine a world where',
+                        mainText: input,
+                        transformation: `${keywords ? keywords.split(',')[0] : 'comes alive'}`,
+                        inspiration: `${keywords ? keywords.split(',')[1] || 'The possibilities are endless'} as we explore this fascinating concept!`
+                    }
+                }
+            };
+
+            const baseText = humanizationTemplates[currentStyle];
+            const keywordArray = keywords ? keywords.split(',').map(k => k.trim()) : [];
+
+            // Modify text based on keywords
+            let modifiedText = { ...baseText };
+            if (keywordArray.length > 0) {
+                modifiedText.content = modifiedText.content.replace(/\${input}/g, `${input}: ${keywordArray[0]}`);
+                modifiedText.elements = {
+                    ...modifiedText.elements,
+                    additional: keywordArray.slice(1).join(', ')
+                };
+            } else {
+                modifiedText.content = modifiedText.content.replace(/\${input}/g, input);
+            }
+
+            return modifiedText;
+        }
+
+        // Display text elements
+        function displayTextElements(elements) {
+            const container = document.getElementById('textElements');
+            container.innerHTML = '';
+
+            for (const [key, value] of Object.entries(elements)) {
+                if (key !== 'additional') {
+                    const element = document.createElement('div');
+                    element.className = 'text-element';
+                    element.innerHTML = `
+                        <h6>${key.charAt(0).toUpperCase() + key.slice(1)}</h6>
+                        <p>${value}</p>
+                    `;
+                    container.appendChild(element);
+                }
+            }
+
+            if (elements.additional) {
+                const element = document.createElement('div');
+                element.className = 'text-element';
+                element.innerHTML = `
+                    <h6>Additional Elements</h6>
+                    <p>${elements.additional}</p>
+                `;
+                container.appendChild(element);
+            }
+        }
+
+        // Save text
+        function saveText() {
+            const text = document.getElementById('humanizerEditor').value;
+            if (!text.trim()) {
+                alert('Please generate or enter text to save.');
+                return;
+            }
+
+            const input = document.getElementById('inputText').value || 'Untitled';
+            const savedTexts = JSON.parse(localStorage.getItem('savedTexts')) || [];
+            savedTexts.push({
+                id: Date.now(),
+                input: input,
+                style: currentStyle,
+                text: text,
+                elements: document.getElementById('textElements').innerHTML,
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('savedTexts', JSON.stringify(savedTexts));
+            alert('Text saved successfully!');
+        }
+
+        // Clear text
+        function clearText() {
+            if (confirm('Are you sure you want to clear the text?')) {
+                document.getElementById('humanizerEditor').value = '';
+                document.getElementById('inputText').value = '';
+                document.getElementById('humanizerKeywords').value = '';
+                document.getElementById('textPreview').textContent = 'Your humanized text will appear here...';
+                document.getElementById('textElements').innerHTML = '';
+                updateStats();
+            }
+        }
+
+        // Download text
+        function downloadText() {
+            const text = document.getElementById('humanizerEditor').value;
+            const input = document.getElementById('inputText').value || 'text';
+            const elements = document.getElementById('textElements').innerHTML;
+            
+            if (!text.trim()) {
+                alert('Please generate or enter text to download.');
+                return;
+            }
+
+            const content = `Humanized Text: ${input}\n\n${text}\n\nElements:\n${elements}`;
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${input.toLowerCase().replace(/\s+/g, '-')}-humanized.txt`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Initialize
+        document.getElementById('humanizerEditor').addEventListener('input', updateStats);
+    </script>
+</body>
+</html> 

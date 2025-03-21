@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thesis Statement Generator - Free Online Tool | Multi-Tools Website</title>
+    <meta name="description" content="Free thesis statement generator tool. Create strong and effective thesis statements with our AI-powered generation technology.">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/css/styles.css" rel="stylesheet">
+    <style>
+        .thesis-container {
+            min-height: 400px;
+            position: relative;
+        }
+        .thesis-editor {
+            width: 100%;
+            min-height: 400px;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            resize: vertical;
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+        }
+        .thesis-toolbar {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .thesis-stats {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .generation-options {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .thesis-suggestions {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        .suggestion-item {
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .suggestion-item:hover {
+            background-color: #f8f9fa;
+            transform: translateX(5px);
+        }
+        .loading-indicator {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .loading-spinner {
+            width: 3rem;
+            height: 3rem;
+        }
+        .paper-type-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .paper-type-btn {
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .paper-type-btn:hover {
+            background-color: #f8f9fa;
+        }
+        .paper-type-btn.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        .thesis-preview {
+            font-size: 1.1em;
+            text-align: left;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px dashed #dee2e6;
+            border-radius: 4px;
+            min-height: 100px;
+            background-color: #f8f9fa;
+        }
+        .thesis-components {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .thesis-component {
+            margin-bottom: 15px;
+        }
+        .thesis-component h6 {
+            margin-bottom: 5px;
+            color: #495057;
+        }
+        .thesis-component p {
+            margin-bottom: 0;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Container -->
+    <div id="header-container"></div>
+
+    <!-- Tool Container -->
+    <div class="tool-container">
+        <!-- Tool Header -->
+        <div class="tool-header">
+            <h1>Thesis Statement Generator</h1>
+            <p class="lead">Create strong and effective thesis statements with our AI-powered generation technology</p>
+        </div>
+
+        <!-- Ad Space -->
+        <div class="ad-space">
+            <!-- Ad content will be loaded dynamically -->
+        </div>
+
+        <!-- Tool Content -->
+        <div class="row">
+            <!-- Main Tool Area -->
+            <div class="col-md-8">
+                <!-- Paper Type Selection -->
+                <div class="paper-type-buttons">
+                    <div class="paper-type-btn active" data-type="argumentative">Argumentative</div>
+                    <div class="paper-type-btn" data-type="analytical">Analytical</div>
+                    <div class="paper-type-btn" data-type="expository">Expository</div>
+                    <div class="paper-type-btn" data-type="research">Research</div>
+                    <div class="paper-type-btn" data-type="persuasive">Persuasive</div>
+                </div>
+
+                <!-- Generation Options -->
+                <div class="generation-options">
+                    <h5>Thesis Statement Generation Options</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Topic/Subject</label>
+                                <input type="text" class="form-control" id="thesisTopic" placeholder="Enter your topic or subject">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Writing Style</label>
+                                <select class="form-select" id="thesisStyle">
+                                    <option value="academic">Academic</option>
+                                    <option value="formal">Formal</option>
+                                    <option value="professional">Professional</option>
+                                    <option value="technical">Technical</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Keywords (optional)</label>
+                                <input type="text" class="form-control" id="thesisKeywords" placeholder="Enter keywords separated by commas">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Statement Type</label>
+                                <select class="form-select" id="thesisType">
+                                    <option value="simple">Simple</option>
+                                    <option value="complex">Complex</option>
+                                    <option value="comprehensive">Comprehensive</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="generateThesis()">
+                        <i class="fas fa-magic"></i> Generate Thesis Statement
+                    </button>
+                </div>
+
+                <!-- Loading Indicator -->
+                <div class="loading-indicator" id="loadingIndicator">
+                    <div class="spinner-border loading-spinner text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Generating your thesis statement...</p>
+                </div>
+
+                <!-- Thesis Preview -->
+                <div class="thesis-preview" id="thesisPreview">
+                    Your generated thesis statement will appear here...
+                </div>
+
+                <!-- Thesis Components -->
+                <div class="thesis-components" id="thesisComponents">
+                    <!-- Thesis components will appear here -->
+                </div>
+
+                <!-- Thesis Editor -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="thesis-container">
+                            <textarea id="thesisEditor" class="thesis-editor" placeholder="Your generated thesis statement will appear here..."></textarea>
+                            
+                            <!-- Toolbar -->
+                            <div class="thesis-toolbar">
+                                <button class="btn btn-sm btn-outline-primary" onclick="saveThesis()">
+                                    <i class="fas fa-save"></i> Save
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="clearThesis()">
+                                    <i class="fas fa-trash"></i> Clear
+                                </button>
+                                <button class="btn btn-sm btn-outline-success" onclick="downloadThesis()">
+                                    <i class="fas fa-download"></i> Download
+                                </button>
+                            </div>
+
+                            <!-- Stats -->
+                            <div class="thesis-stats">
+                                <span id="wordCount">0 words</span> | 
+                                <span id="charCount">0 characters</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Thesis Suggestions -->
+                <div class="thesis-suggestions" id="thesisSuggestions">
+                    <!-- Thesis suggestions will appear here -->
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-md-4">
+                <!-- Tool Information -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">About This Tool</h5>
+                        <p>Our Thesis Statement Generator helps you create strong and effective thesis statements.</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success"></i> Multiple paper types</li>
+                            <li><i class="fas fa-check text-success"></i> Customizable style</li>
+                            <li><i class="fas fa-check text-success"></i> Thesis components</li>
+                            <li><i class="fas fa-check text-success"></i> AI-powered suggestions</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Ad Space -->
+                <div class="ad-space">
+                    <!-- Ad content will be loaded dynamically -->
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Related Tools</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="/tools/ai-writing-generator-tools/ai-essay-writer.html">AI Essay Writer</a></li>
+                            <li><a href="/tools/ai-writing-generator-tools/ai-writer.html">AI Writer</a></li>
+                            <li><a href="/tools/ai-writing-generator-tools/ai-text-generator.html">AI Text Generator</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEO Content -->
+        <div class="mt-5">
+            <h2>Why Use a Thesis Statement Generator?</h2>
+            <p>A thesis statement generator helps you create strong and effective thesis statements that clearly communicate your paper's main argument.</p>
+            
+            <h3>Key Features of Our Thesis Statement Generator</h3>
+            <ul>
+                <li>Multiple paper type support</li>
+                <li>Customizable writing style</li>
+                <li>Thesis components</li>
+                <li>AI-powered suggestions</li>
+                <li>Easy export options</li>
+            </ul>
+
+            <h3>Common Use Cases</h3>
+            <ul>
+                <li>Academic papers</li>
+                <li>Research papers</li>
+                <li>Argumentative essays</li>
+                <li>Analytical papers</li>
+                <li>Expository writing</li>
+            </ul>
+
+            <h3>Tips for Better Thesis Statements</h3>
+            <ul>
+                <li>Choose appropriate paper type</li>
+                <li>Use relevant keywords</li>
+                <li>Select suitable style</li>
+                <li>Consider your audience</li>
+                <li>Review and edit generated statements</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Footer Container -->
+    <div id="footer-container"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/js/main.js"></script>
+    <!-- Tool-specific JS -->
+    <script>
+        let currentPaperType = 'argumentative';
+
+        // Update paper type selection
+        document.querySelectorAll('.paper-type-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.paper-type-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentPaperType = btn.dataset.type;
+            });
+        });
+
+        // Update thesis statistics
+        function updateStats() {
+            const text = document.getElementById('thesisEditor').value;
+            const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+            const chars = text.length;
+
+            document.getElementById('wordCount').textContent = `${words} words`;
+            document.getElementById('charCount').textContent = `${chars} characters`;
+        }
+
+        // Generate thesis statement
+        function generateThesis() {
+            const topic = document.getElementById('thesisTopic').value;
+            const style = document.getElementById('thesisStyle').value;
+            const keywords = document.getElementById('thesisKeywords').value;
+            const type = document.getElementById('thesisType').value;
+
+            if (!topic.trim()) {
+                alert('Please enter a topic or subject.');
+                return;
+            }
+
+            // Show loading indicator
+            document.getElementById('loadingIndicator').style.display = 'block';
+
+            // Simulate AI generation (replace with actual AI API call)
+            setTimeout(() => {
+                const thesis = generateSampleThesis(topic, style, keywords, type);
+                document.getElementById('thesisEditor').value = thesis.statement;
+                document.getElementById('thesisPreview').innerHTML = thesis.statement;
+                displayThesisComponents(thesis.components);
+                updateStats();
+                document.getElementById('loadingIndicator').style.display = 'none';
+            }, 2000);
+        }
+
+        // Generate sample thesis (replace with actual AI generation)
+        function generateSampleThesis(topic, style, keywords, type) {
+            const thesisTemplates = {
+                argumentative: {
+                    statement: `The implementation of ${topic} has significant implications for society, as evidenced by ${keywords ? keywords.split(',')[0] : 'recent developments'}, making it essential to ${keywords ? keywords.split(',')[1] || 'address its impact'}.`,
+                    components: {
+                        claim: `The implementation of ${topic} has significant implications for society`,
+                        evidence: `${keywords ? keywords.split(',')[0] : 'recent developments'}`,
+                        reasoning: `Making it essential to ${keywords ? keywords.split(',')[1] || 'address its impact'}`
+                    }
+                },
+                analytical: {
+                    statement: `Through careful analysis of ${topic}, this paper examines ${keywords ? keywords.split(',')[0] : 'key factors'} and their relationship to ${keywords ? keywords.split(',')[1] || 'broader implications'}, revealing important insights about ${keywords ? keywords.split(',')[2] || 'underlying patterns'}.`,
+                    components: {
+                        subject: topic,
+                        analysis: `${keywords ? keywords.split(',')[0] : 'key factors'}`,
+                        significance: `${keywords ? keywords.split(',')[1] || 'broader implications'}`
+                    }
+                },
+                expository: {
+                    statement: `This paper explores ${topic} by examining ${keywords ? keywords.split(',')[0] : 'fundamental aspects'}, analyzing ${keywords ? keywords.split(',')[1] || 'key components'}, and explaining ${keywords ? keywords.split(',')[2] || 'important relationships'}.`,
+                    components: {
+                        topic: topic,
+                        aspects: `${keywords ? keywords.split(',')[0] : 'fundamental aspects'}`,
+                        components: `${keywords ? keywords.split(',')[1] || 'key components'}`
+                    }
+                },
+                research: {
+                    statement: `This research investigates ${topic} through analysis of ${keywords ? keywords.split(',')[0] : 'primary data'}, examination of ${keywords ? keywords.split(',')[1] || 'existing literature'}, and evaluation of ${keywords ? keywords.split(',')[2] || 'methodological approaches'}.`,
+                    components: {
+                        research: topic,
+                        methodology: `${keywords ? keywords.split(',')[0] : 'primary data'}`,
+                        scope: `${keywords ? keywords.split(',')[1] || 'existing literature'}`
+                    }
+                },
+                persuasive: {
+                    statement: `The adoption of ${topic} represents a crucial step forward, as demonstrated by ${keywords ? keywords.split(',')[0] : 'compelling evidence'}, and should be implemented to ${keywords ? keywords.split(',')[1] || 'achieve desired outcomes'}.`,
+                    components: {
+                        position: `The adoption of ${topic} represents a crucial step forward`,
+                        support: `${keywords ? keywords.split(',')[0] : 'compelling evidence'}`,
+                        action: `${keywords ? keywords.split(',')[1] || 'achieve desired outcomes'}`
+                    }
+                }
+            };
+
+            const baseThesis = thesisTemplates[currentPaperType];
+            const keywordArray = keywords ? keywords.split(',').map(k => k.trim()) : [];
+
+            // Modify thesis based on keywords
+            let modifiedThesis = { ...baseThesis };
+            if (keywordArray.length > 0) {
+                modifiedThesis.statement = modifiedThesis.statement.replace(/\${topic}/g, `${topic}: ${keywordArray[0]}`);
+                modifiedThesis.components = {
+                    ...modifiedThesis.components,
+                    additional: keywordArray.slice(1).join(', ')
+                };
+            } else {
+                modifiedThesis.statement = modifiedThesis.statement.replace(/\${topic}/g, topic);
+            }
+
+            return modifiedThesis;
+        }
+
+        // Display thesis components
+        function displayThesisComponents(components) {
+            const container = document.getElementById('thesisComponents');
+            container.innerHTML = '';
+
+            for (const [key, value] of Object.entries(components)) {
+                if (key !== 'additional') {
+                    const element = document.createElement('div');
+                    element.className = 'thesis-component';
+                    element.innerHTML = `
+                        <h6>${key.charAt(0).toUpperCase() + key.slice(1)}</h6>
+                        <p>${value}</p>
+                    `;
+                    container.appendChild(element);
+                }
+            }
+
+            if (components.additional) {
+                const element = document.createElement('div');
+                element.className = 'thesis-component';
+                element.innerHTML = `
+                    <h6>Additional Elements</h6>
+                    <p>${components.additional}</p>
+                `;
+                container.appendChild(element);
+            }
+        }
+
+        // Save thesis
+        function saveThesis() {
+            const thesis = document.getElementById('thesisEditor').value;
+            if (!thesis.trim()) {
+                alert('Please generate or enter a thesis statement to save.');
+                return;
+            }
+
+            const topic = document.getElementById('thesisTopic').value || 'Untitled';
+            const savedTheses = JSON.parse(localStorage.getItem('savedTheses')) || [];
+            savedTheses.push({
+                id: Date.now(),
+                topic: topic,
+                type: currentPaperType,
+                thesis: thesis,
+                components: document.getElementById('thesisComponents').innerHTML,
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('savedTheses', JSON.stringify(savedTheses));
+            alert('Thesis statement saved successfully!');
+        }
+
+        // Clear thesis
+        function clearThesis() {
+            if (confirm('Are you sure you want to clear the thesis statement?')) {
+                document.getElementById('thesisEditor').value = '';
+                document.getElementById('thesisTopic').value = '';
+                document.getElementById('thesisKeywords').value = '';
+                document.getElementById('thesisPreview').textContent = 'Your generated thesis statement will appear here...';
+                document.getElementById('thesisComponents').innerHTML = '';
+                updateStats();
+            }
+        }
+
+        // Download thesis
+        function downloadThesis() {
+            const thesis = document.getElementById('thesisEditor').value;
+            const topic = document.getElementById('thesisTopic').value || 'thesis-statement';
+            const components = document.getElementById('thesisComponents').innerHTML;
+            
+            if (!thesis.trim()) {
+                alert('Please generate or enter a thesis statement to download.');
+                return;
+            }
+
+            const content = `Thesis Statement: ${topic}\n\n${thesis}\n\nComponents:\n${components}`;
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${topic.toLowerCase().replace(/\s+/g, '-')}-thesis.txt`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Initialize
+        document.getElementById('thesisEditor').addEventListener('input', updateStats);
+    </script>
+</body>
+</html> 

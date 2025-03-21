@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Essay Writer - Free Online Tool | Multi-Tools Website</title>
+    <meta name="description" content="Free AI essay writer tool. Generate high-quality essays on any topic with our AI-powered writing assistant.">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/css/styles.css" rel="stylesheet">
+    <style>
+        .essay-container {
+            min-height: 400px;
+            position: relative;
+        }
+        .essay-editor {
+            width: 100%;
+            min-height: 400px;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            resize: vertical;
+            font-family: 'Times New Roman', Times, serif;
+            line-height: 1.6;
+        }
+        .essay-toolbar {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .essay-stats {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .generation-options {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .ai-suggestions {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        .suggestion-item {
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .suggestion-item:hover {
+            background-color: #f8f9fa;
+        }
+        .loading-indicator {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .loading-spinner {
+            width: 3rem;
+            height: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Container -->
+    <div id="header-container"></div>
+
+    <!-- Tool Container -->
+    <div class="tool-container">
+        <!-- Tool Header -->
+        <div class="tool-header">
+            <h1>AI Essay Writer</h1>
+            <p class="lead">Generate high-quality essays with our AI-powered writing assistant</p>
+        </div>
+
+        <!-- Ad Space -->
+        <div class="ad-space">
+            <!-- Ad content will be loaded dynamically -->
+        </div>
+
+        <!-- Tool Content -->
+        <div class="row">
+            <!-- Main Tool Area -->
+            <div class="col-md-8">
+                <!-- Generation Options -->
+                <div class="generation-options">
+                    <h5>Essay Generation Options</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Topic</label>
+                                <input type="text" class="form-control" id="essayTopic" placeholder="Enter your essay topic">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Essay Type</label>
+                                <select class="form-select" id="essayType">
+                                    <option value="argumentative">Argumentative</option>
+                                    <option value="descriptive">Descriptive</option>
+                                    <option value="narrative">Narrative</option>
+                                    <option value="expository">Expository</option>
+                                    <option value="persuasive">Persuasive</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Word Count</label>
+                                <select class="form-select" id="wordCount">
+                                    <option value="500">500 words</option>
+                                    <option value="1000">1000 words</option>
+                                    <option value="1500">1500 words</option>
+                                    <option value="2000">2000 words</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Writing Style</label>
+                                <select class="form-select" id="writingStyle">
+                                    <option value="academic">Academic</option>
+                                    <option value="formal">Formal</option>
+                                    <option value="casual">Casual</option>
+                                    <option value="professional">Professional</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="generateEssay()">
+                        <i class="fas fa-magic"></i> Generate Essay
+                    </button>
+                </div>
+
+                <!-- Loading Indicator -->
+                <div class="loading-indicator" id="loadingIndicator">
+                    <div class="spinner-border loading-spinner text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Generating your essay...</p>
+                </div>
+
+                <!-- Essay Editor -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="essay-container">
+                            <textarea id="essayEditor" class="essay-editor" placeholder="Your generated essay will appear here..."></textarea>
+                            
+                            <!-- Toolbar -->
+                            <div class="essay-toolbar">
+                                <button class="btn btn-sm btn-outline-primary" onclick="saveEssay()">
+                                    <i class="fas fa-save"></i> Save
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="clearEssay()">
+                                    <i class="fas fa-trash"></i> Clear
+                                </button>
+                                <button class="btn btn-sm btn-outline-success" onclick="downloadEssay()">
+                                    <i class="fas fa-download"></i> Download
+                                </button>
+                            </div>
+
+                            <!-- Stats -->
+                            <div class="essay-stats">
+                                <span id="wordCount">0 words</span> | 
+                                <span id="charCount">0 characters</span> | 
+                                <span id="paragraphCount">0 paragraphs</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Suggestions -->
+                <div class="ai-suggestions" id="aiSuggestions">
+                    <!-- AI suggestions will appear here -->
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-md-4">
+                <!-- Tool Information -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">About This Tool</h5>
+                        <p>Our AI Essay Writer helps you create well-structured essays on any topic.</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success"></i> Multiple essay types</li>
+                            <li><i class="fas fa-check text-success"></i> Customizable length</li>
+                            <li><i class="fas fa-check text-success"></i> Writing style options</li>
+                            <li><i class="fas fa-check text-success"></i> AI-powered suggestions</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Ad Space -->
+                <div class="ad-space">
+                    <!-- Ad content will be loaded dynamically -->
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Related Tools</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="/tools/ai-writing-generator-tools/ai-writer.html">AI Writer</a></li>
+                            <li><a href="/tools/ai-writing-generator-tools/ai-text-generator.html">AI Text Generator</a></li>
+                            <li><a href="/tools/ai-writing-generator-tools/title-generator.html">Title Generator</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEO Content -->
+        <div class="mt-5">
+            <h2>Why Use an AI Essay Writer?</h2>
+            <p>An AI essay writer helps you create well-structured, coherent essays on any topic quickly and efficiently.</p>
+            
+            <h3>Key Features of Our AI Essay Writer</h3>
+            <ul>
+                <li>Multiple essay types support</li>
+                <li>Customizable word count</li>
+                <li>Various writing styles</li>
+                <li>AI-powered suggestions</li>
+                <li>Easy export options</li>
+            </ul>
+
+            <h3>Common Use Cases</h3>
+            <ul>
+                <li>Academic writing</li>
+                <li>Research papers</li>
+                <li>Opinion pieces</li>
+                <li>Creative writing</li>
+                <li>Professional documents</li>
+            </ul>
+
+            <h3>Tips for Better Essays</h3>
+            <ul>
+                <li>Choose a clear topic</li>
+                <li>Select appropriate essay type</li>
+                <li>Use consistent writing style</li>
+                <li>Include relevant examples</li>
+                <li>Proofread before submission</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Footer Container -->
+    <div id="footer-container"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/js/main.js"></script>
+    <!-- Tool-specific JS -->
+    <script>
+        // Update text statistics
+        function updateStats() {
+            const text = document.getElementById('essayEditor').value;
+            const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+            const chars = text.length;
+            const paragraphs = text.split('\n\n').filter(p => p.trim().length > 0).length;
+
+            document.getElementById('wordCount').textContent = `${words} words`;
+            document.getElementById('charCount').textContent = `${chars} characters`;
+            document.getElementById('paragraphCount').textContent = `${paragraphs} paragraphs`;
+        }
+
+        // Generate essay
+        function generateEssay() {
+            const topic = document.getElementById('essayTopic').value;
+            const type = document.getElementById('essayType').value;
+            const wordCount = document.getElementById('wordCount').value;
+            const style = document.getElementById('writingStyle').value;
+
+            if (!topic.trim()) {
+                alert('Please enter an essay topic.');
+                return;
+            }
+
+            // Show loading indicator
+            document.getElementById('loadingIndicator').style.display = 'block';
+
+            // Simulate AI generation (replace with actual AI API call)
+            setTimeout(() => {
+                const essay = generateSampleEssay(topic, type, wordCount, style);
+                document.getElementById('essayEditor').value = essay;
+                updateStats();
+                document.getElementById('loadingIndicator').style.display = 'none';
+            }, 2000);
+        }
+
+        // Generate sample essay (replace with actual AI generation)
+        function generateSampleEssay(topic, type, wordCount, style) {
+            const introductions = {
+                argumentative: `The topic of ${topic} has sparked intense debate in recent years. While some argue that...`,
+                descriptive: `When one thinks of ${topic}, various images and sensations come to mind...`,
+                narrative: `My experience with ${topic} began when...`,
+                expository: `${topic} is a complex subject that requires careful examination...`,
+                persuasive: `In today's world, the importance of ${topic} cannot be overstated...`
+            };
+
+            const bodyParagraphs = [
+                `First and foremost, ${topic} presents several key considerations...`,
+                `Furthermore, the impact of ${topic} extends beyond immediate concerns...`,
+                `Another crucial aspect of ${topic} involves...`,
+                `It is also worth noting that ${topic} has significant implications...`
+            ];
+
+            const conclusions = {
+                argumentative: `In conclusion, while there are valid arguments on both sides of the ${topic} debate...`,
+                descriptive: `Ultimately, ${topic} represents a fascinating subject that continues to captivate...`,
+                narrative: `Looking back on my experience with ${topic}, I've learned valuable lessons...`,
+                expository: `To summarize, ${topic} encompasses various aspects that together form...`,
+                persuasive: `Given the evidence presented, it is clear that ${topic} deserves our attention...`
+            };
+
+            return `${introductions[type]}\n\n${bodyParagraphs.join('\n\n')}\n\n${conclusions[type]}`;
+        }
+
+        // Save essay
+        function saveEssay() {
+            const essay = document.getElementById('essayEditor').value;
+            if (!essay.trim()) {
+                alert('Please generate or enter an essay to save.');
+                return;
+            }
+
+            const title = document.getElementById('essayTopic').value || 'Untitled Essay';
+            const savedEssays = JSON.parse(localStorage.getItem('savedEssays')) || [];
+            savedEssays.push({
+                id: Date.now(),
+                title: title,
+                content: essay,
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('savedEssays', JSON.stringify(savedEssays));
+            alert('Essay saved successfully!');
+        }
+
+        // Clear essay
+        function clearEssay() {
+            if (confirm('Are you sure you want to clear the essay?')) {
+                document.getElementById('essayEditor').value = '';
+                document.getElementById('essayTopic').value = '';
+                updateStats();
+            }
+        }
+
+        // Download essay
+        function downloadEssay() {
+            const essay = document.getElementById('essayEditor').value;
+            const title = document.getElementById('essayTopic').value || 'essay';
+            
+            if (!essay.trim()) {
+                alert('Please generate or enter an essay to download.');
+                return;
+            }
+
+            const blob = new Blob([essay], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${title.toLowerCase().replace(/\s+/g, '-')}.txt`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Initialize
+        document.getElementById('essayEditor').addEventListener('input', updateStats);
+    </script>
+</body>
+</html> 

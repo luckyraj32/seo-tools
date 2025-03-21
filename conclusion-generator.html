@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conclusion Generator - Free Online Tool | Multi-Tools Website</title>
+    <meta name="description" content="Free conclusion generator tool. Create strong and effective conclusions for your essays and articles with our AI-powered technology.">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/css/styles.css" rel="stylesheet">
+    <style>
+        .conclusion-container {
+            min-height: 400px;
+            position: relative;
+        }
+        .conclusion-editor {
+            width: 100%;
+            min-height: 400px;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            resize: vertical;
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+        }
+        .conclusion-toolbar {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .conclusion-stats {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .generation-options {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .conclusion-suggestions {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        .suggestion-item {
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .suggestion-item:hover {
+            background-color: #f8f9fa;
+            transform: translateX(5px);
+        }
+        .loading-indicator {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .loading-spinner {
+            width: 3rem;
+            height: 3rem;
+        }
+        .type-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .type-btn {
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .type-btn:hover {
+            background-color: #f8f9fa;
+        }
+        .type-btn.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        .conclusion-preview {
+            font-size: 1.1em;
+            text-align: left;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px dashed #dee2e6;
+            border-radius: 4px;
+            min-height: 100px;
+            background-color: #f8f9fa;
+        }
+        .conclusion-elements {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .conclusion-element {
+            margin-bottom: 15px;
+        }
+        .conclusion-element h6 {
+            margin-bottom: 5px;
+            color: #495057;
+        }
+        .conclusion-element p {
+            margin-bottom: 0;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Container -->
+    <div id="header-container"></div>
+
+    <!-- Tool Container -->
+    <div class="tool-container">
+        <!-- Tool Header -->
+        <div class="tool-header">
+            <h1>Conclusion Generator</h1>
+            <p class="lead">Create strong and effective conclusions for your essays and articles with our AI-powered technology</p>
+        </div>
+
+        <!-- Ad Space -->
+        <div class="ad-space">
+            <!-- Ad content will be loaded dynamically -->
+        </div>
+
+        <!-- Tool Content -->
+        <div class="row">
+            <!-- Main Tool Area -->
+            <div class="col-md-8">
+                <!-- Type Selection -->
+                <div class="type-buttons">
+                    <div class="type-btn active" data-type="academic">Academic</div>
+                    <div class="type-btn" data-type="business">Business</div>
+                    <div class="type-btn" data-type="creative">Creative</div>
+                    <div class="type-btn" data-type="research">Research</div>
+                    <div class="type-btn" data-type="argumentative">Argumentative</div>
+                </div>
+
+                <!-- Generation Options -->
+                <div class="generation-options">
+                    <h5>Conclusion Generation Options</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Main Points</label>
+                                <textarea class="form-control" id="mainPoints" rows="4" placeholder="Enter the main points of your content"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Writing Style</label>
+                                <select class="form-select" id="writingStyle">
+                                    <option value="formal">Formal</option>
+                                    <option value="semi-formal">Semi-Formal</option>
+                                    <option value="casual">Casual</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Keywords (optional)</label>
+                                <input type="text" class="form-control" id="conclusionKeywords" placeholder="Enter keywords separated by commas">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Conclusion Length</label>
+                                <select class="form-select" id="conclusionLength">
+                                    <option value="short">Short (2-3 sentences)</option>
+                                    <option value="medium">Medium (4-5 sentences)</option>
+                                    <option value="long">Long (6+ sentences)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="generateConclusion()">
+                        <i class="fas fa-magic"></i> Generate Conclusion
+                    </button>
+                </div>
+
+                <!-- Loading Indicator -->
+                <div class="loading-indicator" id="loadingIndicator">
+                    <div class="spinner-border loading-spinner text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Generating your conclusion...</p>
+                </div>
+
+                <!-- Conclusion Preview -->
+                <div class="conclusion-preview" id="conclusionPreview">
+                    Your generated conclusion will appear here...
+                </div>
+
+                <!-- Conclusion Elements -->
+                <div class="conclusion-elements" id="conclusionElements">
+                    <!-- Conclusion elements will appear here -->
+                </div>
+
+                <!-- Conclusion Editor -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="conclusion-container">
+                            <textarea id="conclusionEditor" class="conclusion-editor" placeholder="Your generated conclusion will appear here..."></textarea>
+                            
+                            <!-- Toolbar -->
+                            <div class="conclusion-toolbar">
+                                <button class="btn btn-sm btn-outline-primary" onclick="saveConclusion()">
+                                    <i class="fas fa-save"></i> Save
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="clearConclusion()">
+                                    <i class="fas fa-trash"></i> Clear
+                                </button>
+                                <button class="btn btn-sm btn-outline-success" onclick="downloadConclusion()">
+                                    <i class="fas fa-download"></i> Download
+                                </button>
+                            </div>
+
+                            <!-- Stats -->
+                            <div class="conclusion-stats">
+                                <span id="wordCount">0 words</span> | 
+                                <span id="charCount">0 characters</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conclusion Suggestions -->
+                <div class="conclusion-suggestions" id="conclusionSuggestions">
+                    <!-- Conclusion suggestions will appear here -->
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-md-4">
+                <!-- Tool Information -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">About This Tool</h5>
+                        <p>Our Conclusion Generator helps you create strong and effective conclusions for your content.</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success"></i> Multiple types</li>
+                            <li><i class="fas fa-check text-success"></i> Customizable style</li>
+                            <li><i class="fas fa-check text-success"></i> Length options</li>
+                            <li><i class="fas fa-check text-success"></i> AI-powered suggestions</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Ad Space -->
+                <div class="ad-space">
+                    <!-- Ad content will be loaded dynamically -->
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Related Tools</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="/tools/ai-writing-generator-tools/ai-essay-writer.html">AI Essay Writer</a></li>
+                            <li><a href="/tools/ai-writing-generator-tools/thesis-statement-generator.html">Thesis Statement Generator</a></li>
+                            <li><a href="/tools/ai-writing-generator-tools/ai-writer.html">AI Writer</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEO Content -->
+        <div class="mt-5">
+            <h2>Why Use a Conclusion Generator?</h2>
+            <p>A conclusion generator helps you create strong and effective conclusions that summarize your main points and leave a lasting impression on your readers.</p>
+            
+            <h3>Key Features of Our Conclusion Generator</h3>
+            <ul>
+                <li>Multiple conclusion types</li>
+                <li>Customizable writing style</li>
+                <li>Adjustable length options</li>
+                <li>AI-powered suggestions</li>
+                <li>Easy export options</li>
+            </ul>
+
+            <h3>Common Use Cases</h3>
+            <ul>
+                <li>Academic essays</li>
+                <li>Research papers</li>
+                <li>Business reports</li>
+                <li>Creative writing</li>
+                <li>Argumentative essays</li>
+            </ul>
+
+            <h3>Tips for Better Conclusions</h3>
+            <ul>
+                <li>Summarize main points</li>
+                <li>Restate thesis statement</li>
+                <li>Provide final thoughts</li>
+                <li>Leave lasting impression</li>
+                <li>Maintain consistent tone</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Footer Container -->
+    <div id="footer-container"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/js/main.js"></script>
+    <!-- Tool-specific JS -->
+    <script>
+        let currentType = 'academic';
+
+        // Update type selection
+        document.querySelectorAll('.type-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentType = btn.dataset.type;
+            });
+        });
+
+        // Update text statistics
+        function updateStats() {
+            const text = document.getElementById('conclusionEditor').value;
+            const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+            const chars = text.length;
+
+            document.getElementById('wordCount').textContent = `${words} words`;
+            document.getElementById('charCount').textContent = `${chars} characters`;
+        }
+
+        // Generate conclusion
+        function generateConclusion() {
+            const mainPoints = document.getElementById('mainPoints').value;
+            const style = document.getElementById('writingStyle').value;
+            const keywords = document.getElementById('conclusionKeywords').value;
+            const length = document.getElementById('conclusionLength').value;
+
+            if (!mainPoints.trim()) {
+                alert('Please enter main points to generate a conclusion.');
+                return;
+            }
+
+            // Show loading indicator
+            document.getElementById('loadingIndicator').style.display = 'block';
+
+            // Simulate AI generation (replace with actual AI API call)
+            setTimeout(() => {
+                const result = generateConclusionText(mainPoints, style, keywords, length);
+                document.getElementById('conclusionEditor').value = result.content;
+                document.getElementById('conclusionPreview').innerHTML = result.content;
+                displayConclusionElements(result.elements);
+                updateStats();
+                document.getElementById('loadingIndicator').style.display = 'none';
+            }, 2000);
+        }
+
+        // Generate conclusion text (replace with actual AI generation)
+        function generateConclusionText(mainPoints, style, keywords, length) {
+            const conclusionTemplates = {
+                academic: {
+                    content: `In conclusion, ${mainPoints} ${keywords ? keywords.split(',')[0] : 'demonstrates the significance'} of this research. ${keywords ? keywords.split(',')[1] || 'These findings'} provide valuable insights for future studies.`,
+                    elements: {
+                        summary: mainPoints,
+                        significance: `${keywords ? keywords.split(',')[0] : 'demonstrates the significance'}`,
+                        implications: `${keywords ? keywords.split(',')[1] || 'These findings'} provide valuable insights for future studies`
+                    }
+                },
+                business: {
+                    content: `To summarize, ${mainPoints} ${keywords ? keywords.split(',')[0] : 'presents key opportunities'} for business growth. ${keywords ? keywords.split(',')[1] || 'Moving forward'}, we recommend focusing on these strategic initiatives.`,
+                    elements: {
+                        summary: mainPoints,
+                        opportunities: `${keywords ? keywords.split(',')[0] : 'presents key opportunities'}`,
+                        recommendations: `${keywords ? keywords.split(',')[1] || 'Moving forward'}, we recommend focusing on these strategic initiatives`
+                    }
+                },
+                creative: {
+                    content: `As we draw to a close, ${mainPoints} ${keywords ? keywords.split(',')[0] : 'reveals a fascinating narrative'}. ${keywords ? keywords.split(',')[1] || 'This story'} leaves us with lasting impressions and new perspectives.`,
+                    elements: {
+                        summary: mainPoints,
+                        narrative: `${keywords ? keywords.split(',')[0] : 'reveals a fascinating narrative'}`,
+                        impact: `${keywords ? keywords.split(',')[1] || 'This story'} leaves us with lasting impressions and new perspectives`
+                    }
+                },
+                research: {
+                    content: `In summary, ${mainPoints} ${keywords ? keywords.split(',')[0] : 'contributes significantly'} to our understanding. ${keywords ? keywords.split(',')[1] || 'Future research'} should explore these findings further.`,
+                    elements: {
+                        summary: mainPoints,
+                        contribution: `${keywords ? keywords.split(',')[0] : 'contributes significantly'}`,
+                        futureWork: `${keywords ? keywords.split(',')[1] || 'Future research'} should explore these findings further`
+                    }
+                },
+                argumentative: {
+                    content: `In conclusion, ${mainPoints} ${keywords ? keywords.split(',')[0] : 'strongly supports'} our position. ${keywords ? keywords.split(',')[1] || 'The evidence'} clearly demonstrates the validity of our argument.`,
+                    elements: {
+                        summary: mainPoints,
+                        support: `${keywords ? keywords.split(',')[0] : 'strongly supports'}`,
+                        evidence: `${keywords ? keywords.split(',')[1] || 'The evidence'} clearly demonstrates the validity of our argument`
+                    }
+                }
+            };
+
+            const baseText = conclusionTemplates[currentType];
+            const keywordArray = keywords ? keywords.split(',').map(k => k.trim()) : [];
+
+            // Modify text based on keywords and length
+            let modifiedText = { ...baseText };
+            if (keywordArray.length > 0) {
+                modifiedText.content = modifiedText.content.replace(/\${mainPoints}/g, `${mainPoints}: ${keywordArray[0]}`);
+                modifiedText.elements = {
+                    ...modifiedText.elements,
+                    additional: keywordArray.slice(1).join(', ')
+                };
+            } else {
+                modifiedText.content = modifiedText.content.replace(/\${mainPoints}/g, mainPoints);
+            }
+
+            // Adjust length based on selection
+            if (length === 'short') {
+                modifiedText.content = modifiedText.content.split('.')[0] + '.';
+            } else if (length === 'long') {
+                modifiedText.content += ` ${mainPoints} ${keywords ? keywords.split(',')[0] : 'further emphasizes'} the importance of this discussion.`;
+            }
+
+            return modifiedText;
+        }
+
+        // Display conclusion elements
+        function displayConclusionElements(elements) {
+            const container = document.getElementById('conclusionElements');
+            container.innerHTML = '';
+
+            for (const [key, value] of Object.entries(elements)) {
+                if (key !== 'additional') {
+                    const element = document.createElement('div');
+                    element.className = 'conclusion-element';
+                    element.innerHTML = `
+                        <h6>${key.charAt(0).toUpperCase() + key.slice(1)}</h6>
+                        <p>${value}</p>
+                    `;
+                    container.appendChild(element);
+                }
+            }
+
+            if (elements.additional) {
+                const element = document.createElement('div');
+                element.className = 'conclusion-element';
+                element.innerHTML = `
+                    <h6>Additional Elements</h6>
+                    <p>${elements.additional}</p>
+                `;
+                container.appendChild(element);
+            }
+        }
+
+        // Save conclusion
+        function saveConclusion() {
+            const text = document.getElementById('conclusionEditor').value;
+            if (!text.trim()) {
+                alert('Please generate or enter text to save.');
+                return;
+            }
+
+            const mainPoints = document.getElementById('mainPoints').value || 'Untitled';
+            const savedConclusions = JSON.parse(localStorage.getItem('savedConclusions')) || [];
+            savedConclusions.push({
+                id: Date.now(),
+                mainPoints: mainPoints,
+                type: currentType,
+                text: text,
+                elements: document.getElementById('conclusionElements').innerHTML,
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('savedConclusions', JSON.stringify(savedConclusions));
+            alert('Conclusion saved successfully!');
+        }
+
+        // Clear conclusion
+        function clearConclusion() {
+            if (confirm('Are you sure you want to clear the conclusion?')) {
+                document.getElementById('conclusionEditor').value = '';
+                document.getElementById('mainPoints').value = '';
+                document.getElementById('conclusionKeywords').value = '';
+                document.getElementById('conclusionPreview').textContent = 'Your generated conclusion will appear here...';
+                document.getElementById('conclusionElements').innerHTML = '';
+                updateStats();
+            }
+        }
+
+        // Download conclusion
+        function downloadConclusion() {
+            const text = document.getElementById('conclusionEditor').value;
+            const mainPoints = document.getElementById('mainPoints').value || 'conclusion';
+            const elements = document.getElementById('conclusionElements').innerHTML;
+            
+            if (!text.trim()) {
+                alert('Please generate or enter text to download.');
+                return;
+            }
+
+            const content = `Conclusion: ${mainPoints}\n\n${text}\n\nElements:\n${elements}`;
+            const blob = new Blob([content], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${mainPoints.toLowerCase().replace(/\s+/g, '-')}-conclusion.txt`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Initialize
+        document.getElementById('conclusionEditor').addEventListener('input', updateStats);
+    </script>
+</body>
+</html> 

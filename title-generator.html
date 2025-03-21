@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Title Generator - Free Online Tool | Multi-Tools Website</title>
+    <meta name="description" content="Free title generator tool. Create engaging titles for your content with our AI-powered title generation technology.">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/css/styles.css" rel="stylesheet">
+    <style>
+        .title-container {
+            min-height: 200px;
+            position: relative;
+        }
+        .title-editor {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            resize: vertical;
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+        }
+        .title-toolbar {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .title-stats {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .generation-options {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .title-suggestions {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        .suggestion-item {
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .suggestion-item:hover {
+            background-color: #f8f9fa;
+            transform: translateX(5px);
+        }
+        .loading-indicator {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .loading-spinner {
+            width: 3rem;
+            height: 3rem;
+        }
+        .content-type-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .content-type-btn {
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .content-type-btn:hover {
+            background-color: #f8f9fa;
+        }
+        .content-type-btn.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        .title-preview {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px dashed #dee2e6;
+            border-radius: 4px;
+            min-height: 80px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Container -->
+    <div id="header-container"></div>
+
+    <!-- Tool Container -->
+    <div class="tool-container">
+        <!-- Tool Header -->
+        <div class="tool-header">
+            <h1>Title Generator</h1>
+            <p class="lead">Create engaging titles for your content with our AI-powered title generation technology</p>
+        </div>
+
+        <!-- Ad Space -->
+        <div class="ad-space">
+            <!-- Ad content will be loaded dynamically -->
+        </div>
+
+        <!-- Tool Content -->
+        <div class="row">
+            <!-- Main Tool Area -->
+            <div class="col-md-8">
+                <!-- Content Type Selection -->
+                <div class="content-type-buttons">
+                    <div class="content-type-btn active" data-type="blog">Blog Post</div>
+                    <div class="content-type-btn" data-type="article">Article</div>
+                    <div class="content-type-btn" data-type="video">Video</div>
+                    <div class="content-type-btn" data-type="product">Product</div>
+                    <div class="content-type-btn" data-type="social">Social Media</div>
+                </div>
+
+                <!-- Generation Options -->
+                <div class="generation-options">
+                    <h5>Title Generation Options</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Topic/Subject</label>
+                                <input type="text" class="form-control" id="titleTopic" placeholder="Enter your topic or subject">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Style</label>
+                                <select class="form-select" id="titleStyle">
+                                    <option value="engaging">Engaging</option>
+                                    <option value="professional">Professional</option>
+                                    <option value="creative">Creative</option>
+                                    <option value="seo">SEO Optimized</option>
+                                    <option value="question">Question-based</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Keywords (optional)</label>
+                                <input type="text" class="form-control" id="titleKeywords" placeholder="Enter keywords separated by commas">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Number of Titles</label>
+                                <select class="form-select" id="titleCount">
+                                    <option value="5">5 Titles</option>
+                                    <option value="10">10 Titles</option>
+                                    <option value="15">15 Titles</option>
+                                    <option value="20">20 Titles</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="generateTitles()">
+                        <i class="fas fa-magic"></i> Generate Titles
+                    </button>
+                </div>
+
+                <!-- Loading Indicator -->
+                <div class="loading-indicator" id="loadingIndicator">
+                    <div class="spinner-border loading-spinner text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Generating your titles...</p>
+                </div>
+
+                <!-- Title Preview -->
+                <div class="title-preview" id="titlePreview">
+                    Your generated titles will appear here...
+                </div>
+
+                <!-- Title Editor -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="title-container">
+                            <textarea id="titleEditor" class="title-editor" placeholder="Your generated titles will appear here..."></textarea>
+                            
+                            <!-- Toolbar -->
+                            <div class="title-toolbar">
+                                <button class="btn btn-sm btn-outline-primary" onclick="saveTitles()">
+                                    <i class="fas fa-save"></i> Save
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="clearTitles()">
+                                    <i class="fas fa-trash"></i> Clear
+                                </button>
+                                <button class="btn btn-sm btn-outline-success" onclick="downloadTitles()">
+                                    <i class="fas fa-download"></i> Download
+                                </button>
+                            </div>
+
+                            <!-- Stats -->
+                            <div class="title-stats">
+                                <span id="titleCount">0 titles</span> | 
+                                <span id="charCount">0 characters</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Title Suggestions -->
+                <div class="title-suggestions" id="titleSuggestions">
+                    <!-- Title suggestions will appear here -->
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-md-4">
+                <!-- Tool Information -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">About This Tool</h5>
+                        <p>Our Title Generator helps you create engaging titles for various types of content.</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success"></i> Multiple content types</li>
+                            <li><i class="fas fa-check text-success"></i> SEO optimization</li>
+                            <li><i class="fas fa-check text-success"></i> Keyword integration</li>
+                            <li><i class="fas fa-check text-success"></i> AI-powered suggestions</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Ad Space -->
+                <div class="ad-space">
+                    <!-- Ad content will be loaded dynamically -->
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Related Tools</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="/tools/ai-writing-generator-tools/ai-essay-writer.html">AI Essay Writer</a></li>
+                            <li><a href="/tools/ai-writing-generator-tools/ai-writer.html">AI Writer</a></li>
+                            <li><a href="/tools/ai-writing-generator-tools/ai-text-generator.html">AI Text Generator</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEO Content -->
+        <div class="mt-5">
+            <h2>Why Use a Title Generator?</h2>
+            <p>A title generator helps you create engaging, SEO-friendly titles that capture your audience's attention and improve your content's visibility.</p>
+            
+            <h3>Key Features of Our Title Generator</h3>
+            <ul>
+                <li>Multiple content type support</li>
+                <li>SEO optimization</li>
+                <li>Keyword integration</li>
+                <li>AI-powered suggestions</li>
+                <li>Easy export options</li>
+            </ul>
+
+            <h3>Common Use Cases</h3>
+            <ul>
+                <li>Blog post titles</li>
+                <li>Article headlines</li>
+                <li>Video titles</li>
+                <li>Product names</li>
+                <li>Social media posts</li>
+            </ul>
+
+            <h3>Tips for Better Title Generation</h3>
+            <ul>
+                <li>Choose appropriate content type</li>
+                <li>Use relevant keywords</li>
+                <li>Select suitable style</li>
+                <li>Consider your audience</li>
+                <li>Review and edit generated titles</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Footer Container -->
+    <div id="footer-container"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/js/main.js"></script>
+    <!-- Tool-specific JS -->
+    <script>
+        let currentContentType = 'blog';
+
+        // Update content type selection
+        document.querySelectorAll('.content-type-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.content-type-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentContentType = btn.dataset.type;
+            });
+        });
+
+        // Update title statistics
+        function updateStats() {
+            const titles = document.getElementById('titleEditor').value.split('\n').filter(t => t.trim().length > 0);
+            const chars = document.getElementById('titleEditor').value.length;
+
+            document.getElementById('titleCount').textContent = `${titles.length} titles`;
+            document.getElementById('charCount').textContent = `${chars} characters`;
+        }
+
+        // Generate titles
+        function generateTitles() {
+            const topic = document.getElementById('titleTopic').value;
+            const style = document.getElementById('titleStyle').value;
+            const count = parseInt(document.getElementById('titleCount').value);
+            const keywords = document.getElementById('titleKeywords').value;
+
+            if (!topic.trim()) {
+                alert('Please enter a topic or subject.');
+                return;
+            }
+
+            // Show loading indicator
+            document.getElementById('loadingIndicator').style.display = 'block';
+
+            // Simulate AI generation (replace with actual AI API call)
+            setTimeout(() => {
+                const titles = generateSampleTitles(topic, style, count, keywords);
+                document.getElementById('titleEditor').value = titles.join('\n');
+                document.getElementById('titlePreview').innerHTML = titles[0];
+                updateStats();
+                document.getElementById('loadingIndicator').style.display = 'none';
+            }, 2000);
+        }
+
+        // Generate sample titles (replace with actual AI generation)
+        function generateSampleTitles(topic, style, count, keywords) {
+            const titleTemplates = {
+                blog: [
+                    `The Ultimate Guide to ${topic}`,
+                    `${topic}: Everything You Need to Know`,
+                    `How to Master ${topic} in 2024`,
+                    `Top 10 Tips for ${topic}`,
+                    `Why ${topic} Matters More Than You Think`,
+                    `The Future of ${topic}: A Complete Overview`,
+                    `${topic} Explained: A Beginner's Guide`,
+                    `Everything You've Ever Wanted to Know About ${topic}`,
+                    `The Complete ${topic} Handbook`,
+                    `${topic}: The Definitive Guide`
+                ],
+                article: [
+                    `Breaking Down ${topic}: A Comprehensive Analysis`,
+                    `The Impact of ${topic} on Modern Society`,
+                    `${topic}: A Deep Dive into the Facts`,
+                    `Understanding ${topic}: Key Insights and Trends`,
+                    `The Evolution of ${topic}: Past, Present, and Future`,
+                    `${topic}: What the Experts Say`,
+                    `Exploring the Complexities of ${topic}`,
+                    `The Science Behind ${topic}`,
+                    `${topic}: A Critical Review`,
+                    `Decoding ${topic}: An In-Depth Analysis`
+                ],
+                video: [
+                    `${topic} - Complete Tutorial 2024`,
+                    `How to ${topic} Like a Pro`,
+                    `${topic} Tips and Tricks You Need to Know`,
+                    `The Best ${topic} Techniques Revealed`,
+                    `${topic} for Beginners: Step-by-Step Guide`,
+                    `Master ${topic} in 10 Minutes`,
+                    `${topic}: The Ultimate Tutorial`,
+                    `Everything About ${topic} in One Video`,
+                    `${topic} Secrets Exposed`,
+                    `The Truth About ${topic}`
+                ],
+                product: [
+                    `${topic}: The Game-Changing Solution`,
+                    `Revolutionary ${topic} for Modern Needs`,
+                    `The Smart Choice: ${topic}`,
+                    `${topic} - Your Perfect Match`,
+                    `Transform Your Experience with ${topic}`,
+                    `${topic}: Innovation at Your Fingertips`,
+                    `The Future of ${topic} is Here`,
+                    `${topic}: Designed for Excellence`,
+                    `Experience the Difference with ${topic}`,
+                    `${topic}: Quality You Can Trust`
+                ],
+                social: [
+                    `🔥 ${topic}: The Truth You Need to Know`,
+                    `💡 Amazing ${topic} Tips You'll Love`,
+                    `🎯 Master ${topic} Like a Pro`,
+                    `✨ The Ultimate ${topic} Guide`,
+                    `🚀 Level Up Your ${topic} Game`,
+                    `💪 ${topic} Secrets Revealed`,
+                    `🎨 Creative ${topic} Ideas`,
+                    `💫 Transform Your ${topic} Today`,
+                    `🌟 ${topic} Hacks That Work`,
+                    `💯 The Best ${topic} Tips`
+                ]
+            };
+
+            const titles = titleTemplates[currentContentType].slice(0, count);
+            return titles;
+        }
+
+        // Save titles
+        function saveTitles() {
+            const titles = document.getElementById('titleEditor').value;
+            if (!titles.trim()) {
+                alert('Please generate or enter titles to save.');
+                return;
+            }
+
+            const topic = document.getElementById('titleTopic').value || 'Untitled';
+            const savedTitles = JSON.parse(localStorage.getItem('savedTitles')) || [];
+            savedTitles.push({
+                id: Date.now(),
+                topic: topic,
+                type: currentContentType,
+                titles: titles.split('\n'),
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('savedTitles', JSON.stringify(savedTitles));
+            alert('Titles saved successfully!');
+        }
+
+        // Clear titles
+        function clearTitles() {
+            if (confirm('Are you sure you want to clear the titles?')) {
+                document.getElementById('titleEditor').value = '';
+                document.getElementById('titleTopic').value = '';
+                document.getElementById('titleKeywords').value = '';
+                document.getElementById('titlePreview').textContent = 'Your generated titles will appear here...';
+                updateStats();
+            }
+        }
+
+        // Download titles
+        function downloadTitles() {
+            const titles = document.getElementById('titleEditor').value;
+            const topic = document.getElementById('titleTopic').value || 'titles';
+            
+            if (!titles.trim()) {
+                alert('Please generate or enter titles to download.');
+                return;
+            }
+
+            const blob = new Blob([titles], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${topic.toLowerCase().replace(/\s+/g, '-')}-titles.txt`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Initialize
+        document.getElementById('titleEditor').addEventListener('input', updateStats);
+    </script>
+</body>
+</html> 

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Essay Title Generator - Free Online Tool | Multi-Tools Website</title>
+    <meta name="description" content="Free essay title generator tool. Create engaging and appropriate titles for your essays with our AI-powered title generation technology.">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/css/styles.css" rel="stylesheet">
+    <style>
+        .title-container {
+            min-height: 300px;
+            position: relative;
+        }
+        .title-editor {
+            width: 100%;
+            min-height: 300px;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            resize: vertical;
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+        }
+        .title-toolbar {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .title-stats {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .generation-options {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .title-suggestions {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        .suggestion-item {
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .suggestion-item:hover {
+            background-color: #f8f9fa;
+            transform: translateX(5px);
+        }
+        .loading-indicator {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+        .loading-spinner {
+            width: 3rem;
+            height: 3rem;
+        }
+        .essay-type-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        .essay-type-btn {
+            flex: 1;
+            min-width: 120px;
+            text-align: center;
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .essay-type-btn:hover {
+            background-color: #f8f9fa;
+        }
+        .essay-type-btn.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+        .title-preview {
+            font-size: 1.1em;
+            text-align: left;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px dashed #dee2e6;
+            border-radius: 4px;
+            min-height: 100px;
+            background-color: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Container -->
+    <div id="header-container"></div>
+
+    <!-- Tool Container -->
+    <div class="tool-container">
+        <!-- Tool Header -->
+        <div class="tool-header">
+            <h1>Essay Title Generator</h1>
+            <p class="lead">Create engaging and appropriate titles for your essays with our AI-powered title generation technology</p>
+        </div>
+
+        <!-- Ad Space -->
+        <div class="ad-space">
+            <!-- Ad content will be loaded dynamically -->
+        </div>
+
+        <!-- Tool Content -->
+        <div class="row">
+            <!-- Main Tool Area -->
+            <div class="col-md-8">
+                <!-- Essay Type Selection -->
+                <div class="essay-type-buttons">
+                    <div class="essay-type-btn active" data-type="argumentative">Argumentative</div>
+                    <div class="essay-type-btn" data-type="analytical">Analytical</div>
+                    <div class="essay-type-btn" data-type="expository">Expository</div>
+                    <div class="essay-type-btn" data-type="narrative">Narrative</div>
+                    <div class="essay-type-btn" data-type="descriptive">Descriptive</div>
+                </div>
+
+                <!-- Generation Options -->
+                <div class="generation-options">
+                    <h5>Title Generation Options</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Topic/Subject</label>
+                                <input type="text" class="form-control" id="essayTopic" placeholder="Enter your essay topic or subject">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Style</label>
+                                <select class="form-select" id="essayStyle">
+                                    <option value="academic">Academic</option>
+                                    <option value="creative">Creative</option>
+                                    <option value="professional">Professional</option>
+                                    <option value="engaging">Engaging</option>
+                                    <option value="question">Question-based</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">Keywords (optional)</label>
+                                <input type="text" class="form-control" id="essayKeywords" placeholder="Enter keywords separated by commas">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Number of Titles</label>
+                                <select class="form-select" id="titleCount">
+                                    <option value="5">5 titles</option>
+                                    <option value="10">10 titles</option>
+                                    <option value="15">15 titles</option>
+                                    <option value="20">20 titles</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="generateTitles()">
+                        <i class="fas fa-magic"></i> Generate Titles
+                    </button>
+                </div>
+
+                <!-- Loading Indicator -->
+                <div class="loading-indicator" id="loadingIndicator">
+                    <div class="spinner-border loading-spinner text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Generating your essay titles...</p>
+                </div>
+
+                <!-- Title Preview -->
+                <div class="title-preview" id="titlePreview">
+                    Your generated essay titles will appear here...
+                </div>
+
+                <!-- Title Editor -->
+                <div class="card">
+                    <div class="card-body">
+                        <div class="title-container">
+                            <textarea id="titleEditor" class="title-editor" placeholder="Your generated essay titles will appear here..."></textarea>
+                            
+                            <!-- Toolbar -->
+                            <div class="title-toolbar">
+                                <button class="btn btn-sm btn-outline-primary" onclick="saveTitles()">
+                                    <i class="fas fa-save"></i> Save
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary" onclick="clearTitles()">
+                                    <i class="fas fa-trash"></i> Clear
+                                </button>
+                                <button class="btn btn-sm btn-outline-success" onclick="downloadTitles()">
+                                    <i class="fas fa-download"></i> Download
+                                </button>
+                            </div>
+
+                            <!-- Stats -->
+                            <div class="title-stats">
+                                <span id="titleCount">0 titles</span> | 
+                                <span id="charCount">0 characters</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Title Suggestions -->
+                <div class="title-suggestions" id="titleSuggestions">
+                    <!-- Title suggestions will appear here -->
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-md-4">
+                <!-- Tool Information -->
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">About This Tool</h5>
+                        <p>Our Essay Title Generator helps you create engaging and appropriate titles for your essays.</p>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success"></i> Multiple essay types</li>
+                            <li><i class="fas fa-check text-success"></i> Customizable style</li>
+                            <li><i class="fas fa-check text-success"></i> Keyword integration</li>
+                            <li><i class="fas fa-check text-success"></i> AI-powered suggestions</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Ad Space -->
+                <div class="ad-space">
+                    <!-- Ad content will be loaded dynamically -->
+                </div>
+
+                <!-- Related Tools -->
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Related Tools</h5>
+                        <ul class="list-unstyled">
+                            <li><a href="/tools/ai-writing-generator-tools/ai-essay-writer.html">AI Essay Writer</a></li>
+                            <li><a href="/tools/ai-writing-generator-tools/ai-writer.html">AI Writer</a></li>
+                            <li><a href="/tools/ai-writing-generator-tools/ai-text-generator.html">AI Text Generator</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEO Content -->
+        <div class="mt-5">
+            <h2>Why Use an Essay Title Generator?</h2>
+            <p>An essay title generator helps you create engaging and appropriate titles that capture the essence of your essay and attract readers.</p>
+            
+            <h3>Key Features of Our Essay Title Generator</h3>
+            <ul>
+                <li>Multiple essay type support</li>
+                <li>Customizable style and tone</li>
+                <li>Keyword integration</li>
+                <li>AI-powered suggestions</li>
+                <li>Easy export options</li>
+            </ul>
+
+            <h3>Common Use Cases</h3>
+            <ul>
+                <li>Academic essays</li>
+                <li>Research papers</li>
+                <li>Personal essays</li>
+                <li>Analytical essays</li>
+                <li>Argumentative essays</li>
+            </ul>
+
+            <h3>Tips for Better Essay Titles</h3>
+            <ul>
+                <li>Choose appropriate essay type</li>
+                <li>Use relevant keywords</li>
+                <li>Select suitable style</li>
+                <li>Consider your audience</li>
+                <li>Review and edit generated titles</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Footer Container -->
+    <div id="footer-container"></div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="/js/main.js"></script>
+    <!-- Tool-specific JS -->
+    <script>
+        let currentEssayType = 'argumentative';
+
+        // Update essay type selection
+        document.querySelectorAll('.essay-type-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.essay-type-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentEssayType = btn.dataset.type;
+            });
+        });
+
+        // Update title statistics
+        function updateStats() {
+            const text = document.getElementById('titleEditor').value;
+            const titles = text.split('\n').filter(t => t.trim().length > 0).length;
+            const chars = text.length;
+
+            document.getElementById('titleCount').textContent = `${titles} titles`;
+            document.getElementById('charCount').textContent = `${chars} characters`;
+        }
+
+        // Generate titles
+        function generateTitles() {
+            const topic = document.getElementById('essayTopic').value;
+            const style = document.getElementById('essayStyle').value;
+            const keywords = document.getElementById('essayKeywords').value;
+            const count = parseInt(document.getElementById('titleCount').value);
+
+            if (!topic.trim()) {
+                alert('Please enter an essay topic or subject.');
+                return;
+            }
+
+            // Show loading indicator
+            document.getElementById('loadingIndicator').style.display = 'block';
+
+            // Simulate AI generation (replace with actual AI API call)
+            setTimeout(() => {
+                const titles = generateSampleTitles(topic, style, keywords, count);
+                document.getElementById('titleEditor').value = titles.join('\n');
+                document.getElementById('titlePreview').innerHTML = titles[0];
+                updateStats();
+                document.getElementById('loadingIndicator').style.display = 'none';
+            }, 2000);
+        }
+
+        // Generate sample titles (replace with actual AI generation)
+        function generateSampleTitles(topic, style, keywords, count) {
+            const titleTemplates = {
+                argumentative: [
+                    `The Impact of ${topic}: A Critical Analysis`,
+                    `Why ${topic} Matters: An Argumentative Perspective`,
+                    `Debating ${topic}: A Comprehensive Examination`,
+                    `The Case for ${topic}: Evidence and Analysis`,
+                    `${topic}: A Controversial Debate`
+                ],
+                analytical: [
+                    `Analyzing ${topic}: A Detailed Investigation`,
+                    `The Complexities of ${topic}: An Analytical Approach`,
+                    `Understanding ${topic}: A Systematic Analysis`,
+                    `${topic}: A Comprehensive Study`,
+                    `Examining ${topic}: An In-depth Analysis`
+                ],
+                expository: [
+                    `Exploring ${topic}: A Comprehensive Guide`,
+                    `Understanding ${topic}: An Expository Analysis`,
+                    `${topic}: A Detailed Explanation`,
+                    `The Fundamentals of ${topic}: An Overview`,
+                    `${topic}: A Complete Guide`
+                ],
+                narrative: [
+                    `The Story of ${topic}: A Personal Journey`,
+                    `Experiencing ${topic}: A Narrative Account`,
+                    `${topic}: A Personal Perspective`,
+                    `My Journey with ${topic}: A Personal Narrative`,
+                    `The Evolution of ${topic}: A Story of Change`
+                ],
+                descriptive: [
+                    `The Essence of ${topic}: A Detailed Portrait`,
+                    `Capturing ${topic}: A Descriptive Analysis`,
+                    `${topic}: A Vivid Description`,
+                    `The Beauty of ${topic}: A Descriptive Study`,
+                    `Understanding ${topic}: A Detailed Examination`
+                ]
+            };
+
+            const baseTitles = titleTemplates[currentEssayType];
+            const titles = [];
+            const keywordArray = keywords ? keywords.split(',').map(k => k.trim()) : [];
+
+            for (let i = 0; i < count; i++) {
+                let title = baseTitles[i % baseTitles.length];
+                if (keywordArray.length > 0) {
+                    const keyword = keywordArray[i % keywordArray.length];
+                    title = title.replace(/\${topic}/g, `${topic}: ${keyword}`);
+                } else {
+                    title = title.replace(/\${topic}/g, topic);
+                }
+                titles.push(title);
+            }
+
+            return titles;
+        }
+
+        // Save titles
+        function saveTitles() {
+            const titles = document.getElementById('titleEditor').value;
+            if (!titles.trim()) {
+                alert('Please generate or enter titles to save.');
+                return;
+            }
+
+            const topic = document.getElementById('essayTopic').value || 'Untitled';
+            const savedTitles = JSON.parse(localStorage.getItem('savedEssayTitles')) || [];
+            savedTitles.push({
+                id: Date.now(),
+                topic: topic,
+                type: currentEssayType,
+                titles: titles.split('\n'),
+                date: new Date().toISOString()
+            });
+            localStorage.setItem('savedEssayTitles', JSON.stringify(savedTitles));
+            alert('Titles saved successfully!');
+        }
+
+        // Clear titles
+        function clearTitles() {
+            if (confirm('Are you sure you want to clear the titles?')) {
+                document.getElementById('titleEditor').value = '';
+                document.getElementById('essayTopic').value = '';
+                document.getElementById('essayKeywords').value = '';
+                document.getElementById('titlePreview').textContent = 'Your generated essay titles will appear here...';
+                updateStats();
+            }
+        }
+
+        // Download titles
+        function downloadTitles() {
+            const titles = document.getElementById('titleEditor').value;
+            const topic = document.getElementById('essayTopic').value || 'essay-titles';
+            
+            if (!titles.trim()) {
+                alert('Please generate or enter titles to download.');
+                return;
+            }
+
+            const blob = new Blob([titles], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${topic.toLowerCase().replace(/\s+/g, '-')}-titles.txt`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Initialize
+        document.getElementById('titleEditor').addEventListener('input', updateStats);
+    </script>
+</body>
+</html> 
